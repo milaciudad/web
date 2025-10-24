@@ -1,0 +1,192 @@
+/* Estilos Globales */
+body {
+    font-family: 'Lora', serif;
+    color: #374151; /* Gris oscuro para el texto principal */
+}
+.font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+}
+.font-inter {
+    font-family: 'Inter', sans-serif;
+}
+.accent-color { background-color: #0891B2; }
+.accent-color-text { color: #0891B2; }
+.accent-color-border { border-color: #0891B2; }
+.hover\:accent-color-dark:hover { background-color: #065f74; }
+
+/* Estilos Infografía "Sobre Mí" */
+.cta-color { background-color: #FF6700; }
+.cta-color-text { color: #FF6700; }
+.cta-color-hover:hover { background-color: #e65c00; }
+.serene-blue-text { color: #5C9EAD; }
+.dark-blue-text { color: #0D2C4D; }
+.off-white-bg { background-color: #FDFBF8; }
+.interactive-card .card-content {
+    max-height: 0; opacity: 0;
+    transition: max-height 0.5s ease-out, opacity 0.3s ease-in-out;
+    overflow: hidden;
+}
+.interactive-card:hover .card-content { max-height: 200px; opacity: 1; }
+
+/* --- Estilos para Páginas de Contenido --- */
+#page-menopausia, #page-servicios, #page-blog, #page-contacto, #page-estrategias, #page-duelo, #page-menopausia-guia {
+    background-color: #f9fafb;
+    color: #333;
+}
+#page-menopausia .gradient-text, #page-servicios .gradient-text, #page-blog .gradient-text {
+    background: linear-gradient(90deg, #0891B2, #22d3ee, #0891B2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% auto;
+}
+#page-menopausia .card, #page-servicios .card {
+    background-color: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#page-menopausia .card:hover, #page-servicios .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+#page-menopausia .accordion-header, #page-duelo .accordion-header {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#page-menopausia .accordion-content, #page-duelo .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+}
+#page-menopausia .accordion-header.active + .accordion-content, #page-duelo .accordion-header.active + .accordion-content {
+    max-height: 2000px;
+}
+#page-menopausia .accordion-header .icon-toggle, #page-duelo .accordion-header svg {
+    transition: transform 0.3s ease;
+}
+#page-menopausia .accordion-header.active .icon-toggle, #page-duelo .accordion-header.active svg {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown .dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s 0.2s;
+}
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* --- ESTILOS PARA LA PÁGINA DE BLOG --- */
+#page-blog {
+    font-family: 'Montserrat', sans-serif;
+}
+#page-blog .titulo-principal {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(45deg, #0891B2, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+@media (max-width: 768px) { #page-blog .titulo-principal { font-size: 3rem; } }
+#page-blog .tarjeta-recurso {
+    position: relative; display: block; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-top: 4px solid transparent; text-decoration: none;
+}
+#page-blog .tarjeta-recurso:hover {
+    transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border-top-color: #0891B2;
+}
+#page-blog .tarjeta-recurso img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+#page-blog .tarjeta-recurso:hover img { transform: scale(1.1); }
+#page-blog .tarjeta-contenido {
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 20px 20px;
+    color: white; background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+}
+#page-blog .tarjeta-contenido h3 { font-size: 1.5rem; font-weight: 700; margin: 0; }
+#page-blog .tarjeta-contenido p { font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0; opacity: 0.9; color: white; }
+#page-blog .btn-primario {
+    display: inline-block; background-color: #0891B2; color: white; padding: 12px 28px;
+    border-radius: 50px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; border: none; cursor: pointer; transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#page-blog .btn-primario:hover {
+    background-color: #065f74; transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4); text-decoration: none;
+}
+.aspect-square { position: relative; padding-bottom: 100%; }
+.aspect-square > * { position: absolute; height: 100%; width: 100%; top: 0; left: 0; }
+
+/* --- ESTILOS PARA LA PÁGINA DE CONTACTO --- */
+#page-contacto { font-family: 'Inter', sans-serif; }
+.bg-brand-turquoise { background-color: #06b6d4; }
+.text-brand-turquoise { color: #06b6d4; }
+.border-brand-turquoise { border-color: #06b6d4; }
+.hover\:bg-brand-turquoise-dark:hover { background-color: #0891b2; }
+.bg-brand-turquoise-light { background-color: #cffafe; }
+#page-contacto .btn-primario {
+    display: inline-block; padding: 12px 28px; background-color: #06b6d4; color: white;
+    border-radius: 8px; text-decoration: none; font-weight: 500; text-align: center;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+#page-contacto .btn-primario:hover {
+    background-color: #0891b2; transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.focus\:ring-brand-turquoise:focus { --tw-ring-color: #06b6d4; }
+.focus\:border-brand-turquoise:focus { --tw-border-opacity: 1; border-color: #06b6d4; }
+
+/* --- ESTILOS PARA LA PÁGINA DE ESTRATEGIAS --- */
+#page-estrategias { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+#page-estrategias .main-gradient { background: linear-gradient(135deg, #cffafe, #a5f3fc); }
+.modal-backdrop {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); z-index: 999;
+    display: flex; justify-content: center; align-items: center;
+}
+.modal-content { max-height: 90vh; overflow-y: auto; }
+.breathing-circle {
+    width: 150px; height: 150px; border-radius: 50%;
+    transition: transform 4s ease-in-out, background-color 4s ease-in-out;
+    display: flex; justify-content: center; align-items: center; text-align: center;
+}
+#page-estrategias .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; }
+#page-estrategias .accordion-button.active + .accordion-content { max-height: 500px; }
+
+/* --- ESTILOS PARA LA PÁGINA DEL ARTÍCULO (DUELO & MENOPAUSIA GUIA) --- */
+#page-duelo, #page-menopausia-guia { font-family: 'Montserrat', sans-serif; }
+#page-duelo h1, #page-duelo h2, #page-duelo h3 { font-family: 'Lora', serif; color: #2c3e50; }
+#page-menopausia-guia h1, #page-menopausia-guia h2, #page-menopausia-guia h3, #page-menopausia-guia h4 { font-family: 'Montserrat', sans-serif; }
+#page-duelo .infographic-container { max-width: 900px; margin: 3rem auto; padding: 1.5rem; }
+#page-duelo .professional-card, #page-menopausia-guia .professional-card {
+    background-color: white; border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+#page-duelo .professional-card:hover, #page-menopausia-guia .professional-card:hover {
+    transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    background-color: #f0fcfb;
+}
+#page-duelo .professional-card h3, #page-duelo .professional-card span { transition: color 0.3s ease; }
+#page-duelo .professional-card:hover h3, #page-duelo .professional-card:hover span { color: #0891B2; }
+#page-duelo .modal { transition: opacity 0.3s ease; }
+#page-menopausia-guia .chart-container {
+    position: relative; width: 100%; max-width: 400px;
+    margin-left: auto; margin-right: auto;
+    height: 320px; max-height: 350px;
+}
