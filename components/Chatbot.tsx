@@ -16,10 +16,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ closeChat }) => {
             const savedMessages = sessionStorage.getItem('chatHistory');
             return savedMessages 
                 ? JSON.parse(savedMessages) 
-                : [{ text: 'Hola! Soy el asistente virtual de Mila Ciudad. ¿En qué puedo ayudarte hoy sobre salud y bienestar?', sender: 'bot' }];
+                : [{ text: 'Hola! Soy el asistente virtual de Mila Ciudad. ¿En qué puedo ayudarte hoy sobre **salud y bienestar**?', sender: 'bot' }];
         } catch (error) {
             console.error('Failed to parse chat history from sessionStorage', error);
-            return [{ text: 'Hola! Soy el asistente virtual de Mila Ciudad. ¿En qué puedo ayudarte hoy sobre salud y bienestar?', sender: 'bot' }];
+            return [{ text: 'Hola! Soy el asistente virtual de Mila Ciudad. ¿En qué puedo ayudarte hoy sobre **salud y bienestar**?', sender: 'bot' }];
         }
     });
 

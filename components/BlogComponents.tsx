@@ -60,7 +60,7 @@ const SocialShareButtons: React.FC<{ post: BlogPost }> = ({ post }) => {
 
     return (
         <div className="my-12 py-8 border-t border-b border-gray-200">
-            <h3 className="text-xl font-bold font-montserrat text-center text-gray-700 mb-6">¿Te ha gustado? ¡Compártelo!</h3>
+            <h3 className="text-xl font-bold font-montserrat text-center text-gray-700 mb-6">¿Te ha gustado? <strong>¡Compártelo!</strong></h3>
             <div className="flex flex-wrap justify-center items-center gap-3">
                 {shareLinks.map(link => (
                     <a 
@@ -93,25 +93,25 @@ const ContextualCtaBox: React.FC<{ post: BlogPost; }> = ({ post }) => {
             {
                 tags: ['Sueño', 'Insomnio'],
                 title: '¿Noches en Vela?',
-                text: 'El insomnio no es una sentencia. Hablemos de una estrategia personalizada para que recuperes tu descanso en una Sesión de Claridad Gratuita.',
+                text: 'El insomnio no es una sentencia. Hablemos de una <strong>estrategia personalizada</strong> para que recuperes tu descanso en una <strong>Sesión de Claridad Gratuita.</strong>',
                 icon: 'fa-moon'
             },
             {
                 tags: ['Nutrición', 'Metabolismo', 'Peso', 'Resistencia a la Insulina'],
                 title: '¿Tu Metabolismo ha Cambiado?',
-                text: 'Podemos trazar un plan de nutrición adaptado a ti para que te sientas con más energía y vitalidad. Agenda tu Sesión de Claridad y empecemos a trabajar juntas.',
+                text: 'Podemos trazar un <strong>plan de nutrición adaptado a ti</strong> para que te sientas con más energía y vitalidad. Agenda tu Sesión de Claridad y empecemos a trabajar juntas.',
                 icon: 'fa-apple-whole'
             },
             {
                 tags: ['Miedo', 'Autoestima', 'Bienestar Emocional', 'Crecimiento Personal'],
                 title: '¿Sientes que el Miedo te Frena?',
-                text: 'La menopausia es también una revolución emocional. Juntas podemos encontrar las herramientas para que navegues esta etapa con más calma y confianza. Hablemos en una Sesión de Claridad.',
+                text: 'La menopausia es también una revolución emocional. Juntas podemos encontrar las herramientas para que navegues esta etapa con <strong>más calma y confianza.</strong> Hablemos en una Sesión de Claridad.',
                 icon: 'fa-heart-pulse'
             },
             {
                 tags: ['Menopausia', 'Salud Hormonal', 'Perimenopausia', 'Síntomas'],
                 title: '¿Te Sientes Perdida en esta Etapa?',
-                text: 'No tienes que pasar por esto sola. Te ofrezco un espacio seguro para entender tus síntomas y crear un plan de acción. Agenda tu Sesión de Claridad Gratuita.',
+                text: '<strong>No tienes que pasar por esto sola.</strong> Te ofrezco un espacio seguro para entender tus síntomas y crear un plan de acción. Agenda tu <strong>Sesión de Claridad Gratuita.</strong>',
                 icon: 'fa-spa'
             }
         ];
@@ -124,7 +124,7 @@ const ContextualCtaBox: React.FC<{ post: BlogPost; }> = ({ post }) => {
 
         return {
             title: '¿Lista para dar el Siguiente Paso?',
-            text: 'Si te sientes identificada y quieres un acompañamiento personalizado para navegar esta etapa, estoy aquí para ayudarte. Agenda una Sesión de Claridad Gratuita y hablemos.',
+            text: 'Si te sientes identificada y quieres un <strong>acompañamiento personalizado</strong> para navegar esta etapa, estoy aquí para ayudarte. Agenda una <strong>Sesión de Claridad Gratuita</strong> y hablemos.',
             icon: 'fa-rocket'
         };
     };
@@ -135,7 +135,7 @@ const ContextualCtaBox: React.FC<{ post: BlogPost; }> = ({ post }) => {
         <div className="mt-16 bg-cyan-700 text-white rounded-xl shadow-2xl p-8 md:p-12 text-center">
             <i className={`fas ${cta.icon} text-5xl text-cyan-200 mb-6`}></i>
             <h2 className="text-3xl font-bold font-montserrat">{cta.title}</h2>
-            <p className="mt-4 text-lg text-cyan-100 max-w-2xl mx-auto">{cta.text}</p>
+            <p className="mt-4 text-lg text-cyan-100 max-w-2xl mx-auto" dangerouslySetInnerHTML={{ __html: cta.text }}></p>
             <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1xusc8tIardp1BNw4BXAY6IuRIxpqy-d8N5C1El2Hfo_30ls6gLiTrmGImyoHyy1xamV3wfzU3" target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-white text-cyan-700 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors shadow-lg text-lg transform hover:-translate-y-1">
                 Agendar Sesión de Claridad
             </a>
@@ -149,7 +149,7 @@ const AuthorBioSection: React.FC<{ post: BlogPost; navigate: (target: Navigation
         <p className="text-sm font-semibold tracking-wider text-gray-500">AUTORA</p>
         <h3 className="text-2xl font-bold font-montserrat text-gray-800">{post.author}</h3>
         <p className="mt-4 max-w-2xl mx-auto text-gray-600">
-            Enfermera, autora y coach especialista en menopausia. Mi misión es darte las herramientas para que vivas esta etapa con plenitud, fortaleza y autenticidad. No te doblegues.
+            Enfermera, autora y coach especialista en menopausia. Mi misión es darte las herramientas para que vivas esta etapa con plenitud, fortaleza y autenticidad. <strong>No te doblegues.</strong>
         </p>
         <button onClick={() => navigate({ page: 'servicios' })} className="mt-6 bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5">
             Descubre cómo puedo acompañarte
@@ -207,7 +207,7 @@ const BlogPostDetail: React.FC<{ post: BlogPost; allPosts: BlogPost[]; navigate:
                     <main>
                         <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-gray-700 mb-4">{post.title}</h1>
                         <div className="flex items-center text-gray-500 mb-6">
-                            <span>Por {post.author}</span>
+                            <span>Por <strong>{post.author}</strong></span>
                         </div>
                         
                         <img src={post.imageUrl} alt={post.title} className="w-full h-auto max-h-[500px] object-contain rounded-lg my-8" />
@@ -335,14 +335,14 @@ const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationT
         <section className="bg-gray-50/50">
             <div className="container mx-auto px-6 pt-16 md:pt-24 pb-16">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-cyan-600">Bienvenida a tu Blog DE SALUD ACTIVA EN MENOPAUSIA</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-cyan-600">Bienvenida a tu Blog DE <strong>SALUD ACTIVA EN MENOPAUSIA</strong></h1>
                     <p className="mt-4 text-lg text-gray-600">Un espacio para compartir conocimientos, reflexiones y herramientas para vivir la menopausia con plenitud.</p>
                 </div>
 
                 {featuredPosts.length > 0 && <FeaturedPostsCarousel posts={featuredPosts} navigate={navigate} originPage="blog" />}
 
                 <div className="my-16 md:my-24">
-                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-8">Explora por Colecciones</h2>
+                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-8">Explora por <strong>Colecciones</strong></h2>
                     <div className="flex flex-wrap justify-center gap-3 md:gap-4">
                         <button
                             onClick={() => setSelectedCategory('Ver Todas')}
@@ -384,7 +384,7 @@ const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationT
                 </div>
 
                 <div className="my-16 md:my-24">
-                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-12">Tus Herramientas Esenciales</h2>
+                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-12">Tus <strong>Herramientas Esenciales</strong></h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div 
                             onClick={() => navigate({ page: 'menopausia' })} 
@@ -410,15 +410,15 @@ const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationT
                             </div>
                             <div className="p-6 flex flex-col flex-grow text-center">
                                 <h3 className="text-xl font-bold font-montserrat text-cyan-700">Diagnóstico de Bienestar</h3>
-                                <p className="mt-2 text-gray-600 text-sm flex-grow">Evalúa en 2 minutos las áreas clave de tu salud y obtén una visión clara.</p>
+                                <p className="mt-2 text-gray-600 text-sm flex-grow">Evalúa en <strong>2 minutos</strong> las áreas clave de tu salud y obtén una visión clara.</p>
                                 <span className="mt-4 font-semibold text-cyan-600 group-hover:text-cyan-800 self-center">
                                     Hacer diagnóstico &rarr;
                                 </span>
                             </div>
                         </div>
                         <LeadMagnetBanner
-                            title="Guía de dietas ideales gratuita"
-                            description="La dieta ideal en la menopausia no debe ser un castigo, sino un acto de amor propio que te permite nutrir tu cuerpo, equilibrar tus hormonas, fortalecer tus huesos y cuidar tu bienestar físico y emocional en esta nueva etapa de vida."
+                            title="Guía de <strong>dietas ideales</strong> gratuita"
+                            description="La dieta ideal en la menopausia <strong>no debe ser un castigo,</strong> sino un acto de amor propio que te permite nutrir tu cuerpo, equilibrar tus hormonas, fortalecer tus huesos y cuidar tu bienestar físico y emocional en esta nueva etapa de vida."
                             imageUrl="https://images.squidge.org/images/2025/10/31/DIETA-MEDITERRANEA.md.webp"
                             formId="dietas-ideales-blog-compact"
                             redirectUrl="https://dietas.milaciudad.com/"
@@ -426,8 +426,8 @@ const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationT
                             layout="vertical"
                         />
                         <LeadMagnetBanner
-                            title="Guía de salud activa gratuita"
-                            description="Aprende cómo cuidar tu salud, reconocer los síntomas y prevenir enfermedades como la diabetes, la hipertensión arterial, la hipercolesterolemia y la arteriosclerosis."
+                            title="Guía de <strong>salud activa</strong> gratuita"
+                            description="Aprende cómo cuidar tu salud, reconocer los síntomas y prevenir enfermedades como la <strong>diabetes, la hipertensión arterial, la hipercolesterolemia y la arteriosclerosis.</strong>"
                             imageUrl="https://images.squidge.org/images/2025/10/31/Gemini_Generated_Image_81lp3y81lp3y81lp-processedlightpdf.com.md.webp"
                             formId="guia-salud-activa-blog-compact"
                             redirectUrl="https://saludactiva.milaciudad.com/"
@@ -492,7 +492,7 @@ export const FeaturedPostsSection: React.FC<{ posts: BlogPost[]; navigate: (targ
             <div className="container mx-auto px-6">
                 <div className="text-center mb-12">
                     <h2 className="text-4xl font-bold font-montserrat text-cyan-700">Artículos Destacados</h2>
-                    <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto text-justify">Una selección de lecturas esenciales para empezar tu viaje de conocimiento.</p>
+                    <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto text-justify">Una selección de <strong>lecturas esenciales</strong> para empezar tu viaje de conocimiento.</p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {featuredPosts.map(post => (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { NavigationTarget } from '../types';
 
 // --- SEO Hook ---
@@ -107,7 +107,7 @@ export const LeadMagnetBanner: React.FC<LeadMagnetBannerProps> = ({ title, descr
     if (layout === 'compact') {
         return (
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100/80 p-6 h-full flex flex-col text-center items-center justify-center group transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-                <h2 className="text-xl font-bold font-montserrat text-cyan-700 uppercase">{title}</h2>
+                <h2 className="text-xl font-bold font-montserrat text-cyan-700 uppercase" dangerouslySetInnerHTML={{ __html: title }}></h2>
                 <div className="mt-2 text-gray-600 text-sm leading-relaxed flex-grow text-justify" dangerouslySetInnerHTML={{ __html: description }}></div>
                 {formElement}
             </div>
@@ -118,7 +118,7 @@ export const LeadMagnetBanner: React.FC<LeadMagnetBannerProps> = ({ title, descr
         return (
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100/80 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col md:flex-row items-center">
                 <div className="p-6 md:p-12 flex flex-col justify-center flex-grow md:w-1/2 w-full text-center">
-                    <h2 className="text-4xl lg:text-5xl font-bold font-montserrat text-cyan-700 uppercase">{title}</h2>
+                    <h2 className="text-4xl lg:text-5xl font-bold font-montserrat text-cyan-700 uppercase" dangerouslySetInnerHTML={{ __html: title }}></h2>
                     <div className="mt-6 text-gray-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: description }}></div>
                     <div className="w-full max-w-md mx-auto">{formElement}</div>
                 </div>
@@ -140,7 +140,7 @@ export const LeadMagnetBanner: React.FC<LeadMagnetBannerProps> = ({ title, descr
                 />
             </div>
             <div className="p-6 md:p-8 flex flex-col flex-grow">
-                <h2 className="text-2xl md:text-3xl font-bold font-montserrat text-cyan-700 text-center uppercase">{title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold font-montserrat text-cyan-700 text-center uppercase" dangerouslySetInnerHTML={{ __html: title }}></h2>
                 <div className="mt-4 text-gray-600 leading-relaxed flex-grow text-justify" dangerouslySetInnerHTML={{ __html: description }}></div>
                 {formElement}
             </div>
@@ -204,7 +204,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onAcce
             <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-gray-300">
                     Utilizamos cookies para mejorar tu experiencia en nuestro sitio. Al continuar, aceptas nuestra{' '}
-                    <a href="#" onClick={(e) => { e.preventDefault(); onConfigure(); }} className="underline hover:text-cyan-400">Política de Cookies</a>.
+                    <a href="#" onClick={(e) => { e.preventDefault(); onConfigure(); }} className="underline hover:text-cyan-400"><strong>Política de Cookies</strong></a>.
                 </p>
                 <div className="flex items-center gap-3 flex-shrink-0">
                     <button onClick={onAccept} className="bg-cyan-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-cyan-700 transition-colors">Aceptar</button>
@@ -237,7 +237,7 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
                     {/* About Section */}
                     <div>
                         <h4 className="font-bold text-white text-lg font-montserrat">MILA CIUDAD</h4>
-                        <p className="mt-4 text-sm text-gray-400">Salud Activa. No te doblegues. Acompañamiento y coaching para mujeres en la menopausia.</p>
+                        <p className="mt-4 text-sm text-gray-400"><strong>Salud Activa. No te doblegues.</strong> Acompañamiento y coaching para mujeres en la menopausia.</p>
                         <div className="mt-6 flex space-x-4">
                             <a href="https://www.youtube.com/@MilaCiudadCovers" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors" aria-label="YouTube"><i className="fab fa-youtube text-2xl"></i></a>
                             <a href="https://www.instagram.com/mila.ciudad/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors" aria-label="Instagram"><i className="fab fa-instagram text-2xl"></i></a>
@@ -272,5 +272,45 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
                 </div>
             </div>
         </footer>
+    );
+};
+
+// Helper component for animations on scroll
+export const AnimateOnScroll: React.FC<{ children: React.ReactNode; className?: string; animationClass?: string; delay?: string; threshold?: number }> = 
+({ children, className = '', animationClass = 'animate-fade-in-up', delay = '0s', threshold = 0.15 }) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.unobserve(entry.target);
+                }
+            },
+            { root: null, rootMargin: '0px', threshold }
+        );
+
+        const currentRef = ref.current;
+        if (currentRef) {
+            observer.observe(currentRef);
+        }
+
+        return () => {
+            if (currentRef) {
+                observer.unobserve(currentRef);
+            }
+        };
+    }, [threshold]);
+
+    return (
+        <div 
+            ref={ref} 
+            className={`${className} ${isVisible ? animationClass : 'opacity-0'}`}
+            style={{ animationDelay: delay }}
+        >
+            {children}
+        </div>
     );
 };

@@ -80,7 +80,7 @@ const App: React.FC = () => {
             {!isChatOpen ? (
                 <div className="fixed bottom-24 right-8 z-50 group flex items-center">
                     <span className="bg-cyan-600 text-white text-sm px-3 py-1 rounded-md mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
-                        ¿Necesitas ayuda?
+                        <strong>¿Necesitas ayuda?</strong>
                     </span>
                     <button
                         onClick={() => setIsChatOpen(true)}
