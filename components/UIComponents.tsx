@@ -204,7 +204,7 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onAcce
             <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-gray-300">
                     Utilizamos cookies para mejorar tu experiencia en nuestro sitio. Al continuar, aceptas nuestra{' '}
-                    <a href="#" onClick={(e) => { e.preventDefault(); onConfigure(); }} className="underline hover:text-cyan-400"><strong>Política de Cookies</strong></a>.
+                    <a href="#/cookies" onClick={(e) => { e.preventDefault(); onConfigure(); }} className="underline hover:text-cyan-400"><strong>Política de Cookies</strong></a>.
                 </p>
                 <div className="flex items-center gap-3 flex-shrink-0">
                     <button onClick={onAccept} className="bg-cyan-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-cyan-700 transition-colors">Aceptar</button>
@@ -217,17 +217,10 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onAcce
 };
 
 // --- Footer Component ---
-
 interface FooterProps {
     navigate: (target: NavigationTarget) => void;
 }
-
 export const Footer: React.FC<FooterProps> = ({ navigate }) => {
-    const handleNavigate = (page: NavigationTarget['page']) => (e: React.MouseEvent) => {
-        e.preventDefault();
-        navigate({ page });
-    };
-
     const currentYear = new Date().getFullYear();
 
     return (
@@ -248,20 +241,21 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
                     <div>
                         <h4 className="font-bold text-white text-lg font-montserrat">Navegación</h4>
                         <ul className="mt-4 space-y-2 text-sm">
-                            <li><a href="#" onClick={handleNavigate('home')} className="hover:text-white transition-colors">Inicio</a></li>
-                            <li><a href="#" onClick={handleNavigate('sobre-mi')} className="hover:text-white transition-colors">Sobre Mí</a></li>
-                            <li><a href="#" onClick={handleNavigate('servicios')} className="hover:text-white transition-colors">Mi Método</a></li>
-                            <li><a href="#" onClick={handleNavigate('blog')} className="hover:text-white transition-colors">Blog</a></li>
-                            <li><a href="#" onClick={handleNavigate('contacto')} className="hover:text-white transition-colors">Contacto</a></li>
+                            <li><a href="#/home" onClick={(e) => {e.preventDefault(); navigate('home')}} className="hover:text-white transition-colors">Inicio</a></li>
+                            <li><a href="#/sobre-mi" onClick={(e) => {e.preventDefault(); navigate('sobre-mi')}} className="hover:text-white transition-colors">Sobre Mí</a></li>
+                            <li><a href="#/servicios" onClick={(e) => {e.preventDefault(); navigate('servicios')}} className="hover:text-white transition-colors">Mi Método</a></li>
+                            <li><a href="#/menopausia" onClick={(e) => {e.preventDefault(); navigate('menopausia')}} className="hover:text-white transition-colors">Recursos Menopausia</a></li>
+                            <li><a href="#/blog" onClick={(e) => {e.preventDefault(); navigate('blog')}} className="hover:text-white transition-colors">Blog</a></li>
+                            <li><a href="#/contacto" onClick={(e) => {e.preventDefault(); navigate('contacto')}} className="hover:text-white transition-colors">Contacto</a></li>
                         </ul>
                     </div>
                     {/* Legal Links */}
                     <div>
                         <h4 className="font-bold text-white text-lg font-montserrat">Legal</h4>
                         <ul className="mt-4 space-y-2 text-sm">
-                            <li><a href="#" onClick={handleNavigate('aviso-legal')} className="hover:text-white transition-colors">Aviso Legal</a></li>
-                            <li><a href="#" onClick={handleNavigate('privacidad')} className="hover:text-white transition-colors">Política de Privacidad</a></li>
-                            <li><a href="#" onClick={handleNavigate('cookies')} className="hover:text-white transition-colors">Política de Cookies</a></li>
+                            <li><a href="#/aviso-legal" onClick={(e) => {e.preventDefault(); navigate('aviso-legal')}} className="hover:text-white transition-colors">Aviso Legal</a></li>
+                            <li><a href="#/privacidad" onClick={(e) => {e.preventDefault(); navigate('privacidad')}} className="hover:text-white transition-colors">Política de Privacidad</a></li>
+                            <li><a href="#/cookies" onClick={(e) => {e.preventDefault(); navigate('cookies')}} className="hover:text-white transition-colors">Política de Cookies</a></li>
                         </ul>
                     </div>
                 </div>

@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import type { NavigationTarget } from '../types';
 import { AnimateOnScroll } from './UIComponents';
+import type { NavigationTarget } from '../types';
+
+interface MenopauseJourneyProps {
+    navigate: (target: NavigationTarget) => void;
+}
 
 const TheFlightForwardStorySection: React.FC = () => {
     return (
         <AnimateOnScroll>
             <section className="py-16 md:py-24">
                 <div className="max-w-3xl mx-auto text-center">
-                    <h2 className="font-extrabold font-montserrat text-cyan-700">
+                    <h2 className="font-extrabold font-montserrat gradient-text">
                         <span className="block text-3xl md:text-4xl">EL VUELO HACIA ADELANTE</span>
                         <span className="block text-4xl md:text-5xl mt-2">MI VIAJE CON LA MENOPAUSIA</span>
                     </h2>
@@ -83,7 +87,7 @@ const TheFlightForwardStorySection: React.FC = () => {
                     <p>Escucho y acompaño desde <strong>MILACIUDAD+,</strong> un espacio donde compartir, validar experiencias y ofrecer herramientas prácticas para transitar la menopausia con dignidad y sentido.</p>
 
                     <div className="text-center pt-8">
-                        <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1xusc8tIardp1BNw4BXAY6IuRIxpqy-d8N5C1El2Hfo_30ls6gLiTrmGImyoHyy1xamV3wfzU3" target="_blank" rel="noopener noreferrer" className="inline-block bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors duration-300 shadow-lg transform hover:-translate-y-0.5">
+                        <a href="https://calendar.app.google/e66VNHbHuun6zVz38" target="_blank" rel="noopener noreferrer" className="inline-block bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors duration-300 shadow-lg transform hover:-translate-y-0.5">
                             Quiero mi sesión gratuita
                         </a>
                     </div>
@@ -178,7 +182,7 @@ const HistorySection: React.FC = () => {
                         <img 
                             src="https://images.squidge.org/images/2025/10/19/MILA-CIUDAD-MI-HISTORIA.png" 
                             alt="Mi Historia - Mila Ciudad" 
-                            className="max-w-md mx-auto bg-white p-4 border rounded-lg shadow-xl transform transition-transform duration-300 hover:scale-105 hover:rotate-2" 
+                            className="w-full max-w-md mx-auto bg-white p-4 border rounded-lg shadow-xl transition-transform duration-300 hover:scale-105" 
                         />
                     </div>
 
@@ -249,10 +253,10 @@ const BookSection: React.FC = () => {
                         <div className="mt-6 w-24 h-1 bg-cyan-200 mx-auto rounded-full"></div>
                     </div>
 
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div className="text-gray-700">
                             <h3 className="text-2xl md:text-3xl font-bold font-montserrat text-cyan-700 leading-tight">CONSIGUE LA GUÍA ESENCIAL PARA AFRONTAR CON CALMA TODOS LOS DESAFÍOS DE LA CRIANZA</h3>
-                            <p className="mt-6 text-justify">Como madre y enfermera especializada en cuidados pediátricos, entiendo la crianza moderna: un mar de información que gera <strong>ansiedad y preocupación.</strong></p>
+                            <p className="mt-6 text-justify">Como madre y enfermera especializada en cuidados pediátricos, entiendo la crianza moderna: un mar de información que genera <strong>ansiedad y preocupación.</strong></p>
                             <p className="mt-4 font-semibold text-justify">Mi libro ofrece:</p>
                             <ul className="mt-4 space-y-3">
                                 <li className="flex items-start"><i className="fa-solid fa-book-open-reader text-cyan-500 mt-1 mr-3"></i><div><strong>Conocimiento Práctico:</strong> Protocolos claros, sin confusión.</div></li>
@@ -265,7 +269,7 @@ const BookSection: React.FC = () => {
                         </div>
 
                         <div className="flex flex-col items-center">
-                            <img src="https://images.squidge.org/images/2025/11/01/Diseno-sin-titulo-_6_-_1_-Photoroom.webp" alt="Libro Rescatando Padres" className="max-w-xs md:max-w-sm w-full transform transition-transform duration-500 hover:scale-105 hover:rotate-[-2deg]" />
+                            <img src="https://images.squidge.org/images/2025/11/01/Diseno-sin-titulo-_6_-_1_-Photoroom.webp" alt="Libro Rescatando Padres" className="max-w-xs md:max-w-sm w-full transition-transform duration-500 hover:scale-105" />
                             <a href={bookUrl} target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-cyan-600 text-white font-bold py-3 px-10 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-1">
                                 CONSÍGUELO EN AMAZON
                             </a>
@@ -317,36 +321,35 @@ const BookSection: React.FC = () => {
     );
 };
 
-export const MenopauseJourney: React.FC<{ navigate: (target: NavigationTarget) => void }> = ({ navigate }) => {
+export const MenopauseJourney: React.FC<MenopauseJourneyProps> = ({ navigate }) => {
     return (
         <div className="bg-white text-gray-700 font-lora">
             <div className="container mx-auto px-6">
                 
                 {/* Intro Section */}
-                <AnimateOnScroll>
-                    <section className="py-16 md:py-24 text-center">
-                        <h1 className="text-4xl md:text-5xl font-extrabold font-montserrat text-cyan-700"><strong>EN UNA VIDA HAY MUCHAS VIDAS:</strong> Mi viaje</h1>
-                        <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">De la Ciencia de Cuidar a la Sabiduría de Acompañar. Descubre como tus talentos pueden guiarte en la menopausia.</p>
-                    </section>
-                </AnimateOnScroll>
+                <section className="py-16 md:py-24 text-center animate-fade-in-up">
+                    <h1 className="text-4xl md:text-5xl font-extrabold font-montserrat gradient-text">
+                        <span className="block">EN UNA VIDA HAY MUCHAS VIDAS</span>
+                        <span className="block text-3xl md:text-4xl mt-2">Mi viaje</span>
+                    </h1>
+                    <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">De la Ciencia de Cuidar a la Sabiduría de Acompañar. Descubre como tus talentos pueden guiarte en la menopausia.</p>
+                </section>
                 
-                <AnimateOnScroll>
-                    <section className="pb-16 md:pb-24">
-                         <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-                            <div className="flex justify-center items-center" >
-                               <img 
-                                    src="https://images.squidge.org/images/2025/10/15/milaciudadeeba031bf447f273.png"
-                                    alt="Mila Ciudad sonriendo" 
-                                    className="bg-white p-4 pb-16 shadow-xl border rounded-sm max-w-sm transform -rotate-3 transition-transform duration-300 hover:rotate-0 hover:scale-105"
-                                />
-                            </div>
-                            <div>
-                               <h2 className="text-3xl font-bold font-montserrat text-cyan-700">LA CIENCIA DE CUIDAR</h2>
-                               <p className="mt-4 text-xl italic">"Enfermera especialista en Familiar y Comunitaria, mi vocación es el <strong>bienestar del cuerpo y el alma.</strong>"</p>
-                            </div>
+                <section className="pb-16 md:pb-24 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                     <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+                        <div className="flex justify-center items-center w-full" >
+                           <img 
+                                src="https://images.squidge.org/images/2025/10/15/milaciudadeeba031bf447f273.png"
+                                alt="Mila Ciudad sonriendo" 
+                                className="bg-white p-4 shadow-xl border rounded-sm w-full max-w-sm md:max-w-none transition-transform duration-300 hover:scale-105"
+                            />
                         </div>
-                    </section>
-                </AnimateOnScroll>
+                        <div>
+                           <h2 className="text-3xl font-bold font-montserrat text-cyan-700">LA CIENCIA DE CUIDAR</h2>
+                           <p className="mt-4 text-xl italic">"Enfermera especialista en Familiar y Comunitaria, mi vocación es el <strong>bienestar del cuerpo y el alma.</strong>"</p>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Talents Section */}
                 <AnimateOnScroll>
@@ -376,7 +379,7 @@ export const MenopauseJourney: React.FC<{ navigate: (target: NavigationTarget) =
                                     <img src="https://images.squidge.org/images/2025/11/02/Mila-Ciudad-12-1.md.png" alt="Blog de Mila Ciudad" className="w-full h-48 object-cover mb-4 rounded-lg"/>
                                     <h3 className="text-xl font-bold font-montserrat text-gray-700">No te Doblegues</h3>
                                     <p className="mt-2 text-gray-600 text-sm flex-grow">Mi afán por <strong>afrontar la realidad con valentía</strong> y compartir esa fortaleza inquebrantable con quienes me leen y escuchan.</p>
-                                    <button onClick={() => navigate({ page: 'blog' })} className="mt-4 bg-cyan-600 text-white font-bold py-2 px-6 rounded-full hover:bg-cyan-700 transition-colors text-sm">EXPLORA MI BLOG</button>
+                                    <button onClick={() => navigate('blog')} className="mt-4 bg-cyan-600 text-white font-bold py-2 px-6 rounded-full hover:bg-cyan-700 transition-colors text-sm">EXPLORA MI BLOG</button>
                                 </div>
                             </div>
                         </div>
@@ -385,9 +388,9 @@ export const MenopauseJourney: React.FC<{ navigate: (target: NavigationTarget) =
                 
                 <TheFlightForwardStorySection />
 
-                <HistorySection />
-
                 <MissionSection />
+
+                <HistorySection />
 
                 <BookSection />
 

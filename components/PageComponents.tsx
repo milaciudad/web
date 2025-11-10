@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import type { NavigationTarget, Page, Testimonial, BlogPost } from '../types';
+import type { Page, Testimonial, BlogPost, NavigationTarget } from '../types';
 import { LeadMagnetBanner, useSEOMetadata, AnimateOnScroll } from './UIComponents';
 import { MenopauseJourney } from './MenopauseJourney';
 import { FeaturedPostsSection } from './BlogComponents';
 import { getBlogPosts } from '../services/cms';
+import { GoogleGenAI } from '@google/genai';
 import {
   Radar,
   RadarChart,
@@ -12,7 +14,6 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
 } from 'recharts';
-
 
 interface PageProps {
     navigate: (target: NavigationTarget) => void;
@@ -37,22 +38,22 @@ export const HomePage: React.FC<PageProps> = ({ navigate }) => {
             {/* Hero Section */}
             <section className="bg-gradient-to-br from-cyan-50 via-gray-50 to-white py-12 md:py-20 overflow-hidden">
                 <div className="container mx-auto px-6">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div className="flex justify-center items-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                    <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-start">
+                        <div className="flex justify-center items-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                            <img 
                                 src="https://images.squidge.org/images/2025/11/01/milaciudad.webp" 
                                 alt="Mila Ciudad" 
-                                className="w-auto h-[500px] md:h-[650px] lg:h-[750px] animate-float transition-transform duration-300 hover:scale-105"
+                                className="w-full max-w-sm md:max-w-full mx-auto h-auto object-contain max-h-[650px] animate-float transition-transform duration-300 hover:scale-105"
                             />
                         </div>
                         <div className="text-center md:text-left">
-                            <h1 className="text-5xl md:text-6xl font-extrabold font-montserrat gradient-text animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                            <h1 className="text-5xl lg:text-6xl font-extrabold font-montserrat gradient-text animate-fade-in-up leading-relaxed pb-2" style={{ animationDelay: '0.1s' }}>
                                 Navega la menopausia con <strong>claridad y fortaleza</strong>
                             </h1>
-                            <p className="mt-6 text-xl font-semibold text-gray-800 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>Una enfermera que sabe lo que es vivirla.</p>
-                            <p className="mt-2 text-lg text-cyan-600 font-bold uppercase tracking-wider animate-fade-in-up" style={{ animationDelay: '0.6s' }}>EN UNA VIDA HAY MUCHAS VIDAS</p>
+                            <p className="mt-8 text-xl font-semibold text-gray-800 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>Una enfermera que sabe lo que es vivirla.</p>
+                            <p className="mt-2 text-lg text-cyan-600 font-bold uppercase tracking-wider animate-fade-in-up" style={{ animationDelay: '0.3s' }}>EN UNA VIDA HAY MUCHAS VIDAS</p>
                             
-                            <AnimateOnScroll className="mt-8" delay="0.8s">
+                            <AnimateOnScroll className="mt-8" delay="0.4s">
                                 <div className="bg-cyan-50/50 p-8 rounded-xl border border-cyan-100 shadow-lg space-y-6">
                                     {/* Pain Point */}
                                     <div className="flex items-start gap-4">
@@ -86,19 +87,21 @@ export const HomePage: React.FC<PageProps> = ({ navigate }) => {
                                     </div>
                                 </div>
                             </AnimateOnScroll>
-                            
-                            <div className="mt-10 animate-fade-in-up" style={{ animationDelay: '1.2s' }}>
-                                <h2 className="text-2xl font-bold font-montserrat text-cyan-600">Mi Lema de Vida</h2>
-                                <h3 className="text-4xl font-extrabold font-montserrat text-gray-800 mt-2">NO TE DOBLEGUES</h3>
-                                <p className="mt-4 text-gray-600 leading-relaxed text-justify">Más que un lema, es el motor que impulsa mi proyecto vital. Es un recordatorio de <strong>mantenerme fiel a mis valores,</strong> de afrontar la realidad con valentía y de compartir esa fortaleza con quienes me leen y escuchan. Soy enfermera, escritora y cantante; mi vocación es cuidar y dar voz. Esta es la historia de cómo decidí <strong>plantar cara a la menopausia.</strong></p>
-                                <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                                    <button onClick={() => navigate({ page: 'servicios' })} className="bg-cyan-600 text-white font-bold py-4 px-10 text-lg rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5 animate-pulse-cta">
-                                        DESCUBRE MI MÉTODO
-                                    </button>
-                                    <button onClick={() => navigate({ page: 'sobre-mi' })} className="bg-white text-cyan-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors border border-cyan-600 shadow-lg transform hover:-translate-y-0.5">
-                                        CONOCE MI HISTORIA
-                                    </button>
-                                </div>
+                        </div>
+                    </div>
+                    <div className="mt-16 md:mt-24 animate-fade-in-up">
+                        <div className="text-center max-w-3xl mx-auto">
+                            <h2 className="text-3xl lg:text-4xl font-bold font-montserrat text-cyan-600">Mi Lema de Vida</h2>
+                            <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-montserrat text-gray-800 mt-2 md:leading-tight">NO TE DOBLEGUES</h3>
+                            <p className="mt-4 text-lg lg:text-xl text-gray-600 leading-relaxed">Más que un lema, es el motor que impulsa mi proyecto vital. Es un recordatorio de <strong>mantenerme fiel a mis valores,</strong> de afrontar la realidad con valentía y de compartir esa fortaleza con quienes me leen y escuchan. Soy enfermera, escritora y cantante; mi vocación es cuidar y dar voz.</p>
+                            <p className="mt-4 text-lg lg:text-xl text-gray-600 leading-relaxed italic">Esta es la historia de cómo decidí <strong>plantar cara a la menopausia.</strong></p>
+                            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                                <button onClick={() => navigate('servicios')} className="bg-cyan-600 text-white font-bold py-4 px-10 text-lg rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5 animate-pulse-cta">
+                                    DESCUBRE MI MÉTODO
+                                </button>
+                                <button onClick={() => navigate('sobre-mi')} className="bg-white text-cyan-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors border border-cyan-600 shadow-lg transform hover:-translate-y-0.5">
+                                    CONOCE MI HISTORIA
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -118,67 +121,684 @@ export const HomePage: React.FC<PageProps> = ({ navigate }) => {
                             title="Consigue <strong>5 estrategias</strong> para controlar los Sofocos"
                             description="Una <strong>guía práctica y directa</strong> con las estrategias que me ayudaron a mí y a cientos de mujeres a gestionar uno de los síntomas más molestos de la menopausia."
                             imageUrl="https://images.squidge.org/images/2025/10/29/controla-tus-sofocos-mila-ciudad.webp"
-                            formId="sofocos-home"
-                            redirectUrl="https://sofocosmenopausia.milaciudad.com/"
-                            formspreeEndpoint="https://formspree.io/f/mqagygjl"
+                            formId="controla-sofocos-homepage"
+                            redirectUrl="https://controlatusofocos.milaciudad.com/"
+                            formspreeEndpoint="https://formspree.io/f/mqkvqejb"
                             layout="horizontal"
                         />
                     </div>
                 </div>
             </section>
+            <TestimonialsSection />
+            <FeaturedPostsSection posts={posts.filter(p => p.isFeatured)} navigate={navigate} originPage="home" />
             
-            <FeaturedPostsSection posts={posts} navigate={navigate} originPage="home" />
-
-            <section className="py-16 md:py-24 bg-white">
+            <section className="py-16 md:py-24 bg-cyan-50/50">
                 <div className="container mx-auto px-6">
-                    <div className="max-w-5xl mx-auto">
-                        <LeadMagnetBanner
-                            title="MI GUÍA <strong>ESENCIAL</strong> PARA LA MENOPAUSIA"
-                            description={`<p>Una <strong>guía completa</strong> para entender y navegar esta etapa con claridad, herramientas prácticas y serenidad. Descubre cómo transformar los síntomas en una oportunidad para <strong>cuidarte como nunca.</strong></p>`}
-                            imageUrl="https://images.squidge.org/images/2025/11/01/mila-ciudad-guia-meniopausia-Photoroom.md.png"
-                            formId="guia-menopausia-home"
-                            redirectUrl="https://todosobrelamenopausia.milaciudad.com/"
-                            formspreeEndpoint="https://formspree.io/f/mqagygvl"
-                            layout="horizontal"
-                            imageFit="contain"
-                            imageClassName="animate-float"
-                        />
-                    </div>
+                    <AnimateOnScroll>
+                        <div className="grid md:grid-cols-2 gap-12 items-center bg-white p-8 md:p-12 rounded-xl shadow-xl border">
+                            <div className="flex justify-center items-center">
+                                <img 
+                                    src="https://images.squidge.org/images/2025/11/07/Gemini_Generated_Image_69z92769z92769z9.png" 
+                                    alt="Centro de Recursos para la Menopausia" 
+                                    className="rounded-lg max-w-lg w-full transition-transform duration-300 hover:scale-105 cursor-pointer"
+                                    onClick={() => navigate('menopausia')}
+                                />
+                            </div>
+                            <div className="text-center md:text-left">
+                                <h2 className="text-3xl lg:text-4xl font-bold font-montserrat text-cyan-700">Centro de Recursos para la Menopausia</h2>
+                                <p className="mt-6 text-lg text-gray-600">
+                                    He creado el <strong>Centro de Recursos para la Menopausia</strong>, un espacio completo con información y herramientas para entender, aceptar y vivir esta etapa con plenitud.
+                                </p>
+                                <p className="mt-4 text-gray-600">
+                                    Aquí encontrarás artículos sobre síntomas, nutrición, bienestar emocional y mucho más, todo basado en evidencia científica y mi experiencia como enfermera y coach.
+                                </p>
+                                <button 
+                                    onClick={() => navigate('menopausia')} 
+                                    className="mt-8 bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5"
+                                >
+                                    EXPLORAR EL CENTRO DE RECURSOS
+                                </button>
+                            </div>
+                        </div>
+                    </AnimateOnScroll>
                 </div>
             </section>
         </div>
     );
 };
 
-
 // --- AboutPage ---
 export const AboutPage: React.FC<PageProps> = ({ navigate }) => {
     useSEOMetadata(
-        'Mi Historia con la Menopausia | Sobre Mila Ciudad',
-        'Conoce el viaje personal de Mila Ciudad. De enfermera a coach, descubre la historia que la impulsó a ayudar a otras mujeres a no doblegarse ante la menopausia.'
+        'Sobre Mí | Mila Ciudad',
+        'De la Ciencia de Cuidar a la Sabiduría de Acompañar. Descubre mi viaje, mi historia y mi misión para acompañarte en la menopausia.'
     );
-    return <MenopauseJourney navigate={navigate} />;
+    return <div className="animate-fade-in"><MenopauseJourney navigate={navigate} /></div>;
 };
 
 // --- ServicesPage (Mi Método) ---
 export const ServicesPage: React.FC<PageProps> = ({ navigate }) => {
     useSEOMetadata(
-        'Mi Método MILACIUDAD+ | Coaching Personalizado de Menopausia',
-        'Descubre el método de coaching MILACIUDAD+, un acompañamiento cercano para gestionar los síntomas de la menopausia, recuperar tu energía y sentirte acompañada.'
+        'Mi Método | Mila Ciudad',
+        'Un viaje de acompañamiento personalizado para que recuperes el control de tu bienestar, transformes la incertidumbre en poder y te sientas acompañada en esta nueva etapa.'
     );
-    const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+    const testimonials: Testimonial[] = [
+        {
+            quote: 'Sentía que había perdido el control de mi cuerpo y mi mente. El método de Mila me dio un mapa claro y por primera vez en años, sentí que no estaba sola. He recuperado mi energía y, lo más importante, la confianza en mi misma.',
+            author: 'Laura G.',
+            age: 52,
+            profession: 'Abogada',
+        },
+        {
+            quote: 'La sesión de claridad fue reveladora. Mila tiene una capacidad increíble para escuchar y hacerte ver las cosas desde otra perspectiva. Salí de esa conversación con una calma y una motivación que no esperaba. Fue el primer paso para un cambio real.',
+            author: 'Sofia M.',
+            age: 48,
+            profession: 'Diseñadora Gráfica',
+        },
+        {
+            quote: 'Dudaba si un coaching era para mí, pero la cercanía de Mila y su experiencia como enfermera me convencieron. Ha sido la mejor inversión en mi salud. Entiendo mi cuerpo y tengo herramientas para gestionar los síntomas que antes me desbordaban.',
+            author: 'Carmen R.',
+            age: 55,
+            profession: 'Profesora',
+        },
+        {
+            quote: 'Gracias a Mila he vuelto a dormir noches enteras. Su enfoque integral, que combina nutrición, hábitos y gestión emocional, ha sido un cambio radical. Me siento más vital y con más claridad mental que hace diez años.',
+            author: 'Isabel V.',
+            age: 50,
+            profession: 'Empresaria',
+        },
+    ];
+
+    const faqs = [
+        {
+            question: '¿Esta sesión tiene algún coste?',
+            answer: 'La Sesión de Claridad es completamente gratuita y sin ningún tipo de compromiso. Es un espacio de 30-45 minutos diseñado para que nos conozcamos, para que puedas contarme tu historia y para que te lleves una visión clara de tus próximos pasos. Mi objetivo es que salgas de la sesión con valor real, independientemente de si decidimos trabajar juntas o no.'
+        },
+        {
+            question: '¿Qué pasa si después de la sesión decido que no es para mí?',
+            answer: 'Absolutamente nada. La sesión es para que ambas valoremos si conectamos y si mi método es el adecuado para ti en este momento. La honestidad y la confianza son la base de mi trabajo. Si sientes que no es tu camino, te lo agradeceré y te desearé lo mejor. No hay ninguna presión.'
+        },
+        {
+            question: '¿Se habla de precios en la sesión de claridad?',
+            answer: 'Sí, pero solo al final y únicamente si ambas sentimos que hay una buena conexión y que puedo ayudarte. Si es así, te explicaré con total transparencia en qué consiste mi programa de acompañamiento "MILACIUDAD+", su duración y la inversión que supone, para que tengas toda la información y puedas tomar la mejor decisión para ti.'
+        },
+        {
+            question: '¿Qué pasa si no soy candidata al programa?',
+            answer: 'Mi compromiso es con tu bienestar. Si durante la sesión considero que mi programa no es lo que necesitas, o que te beneficiarías más de otro tipo de profesional (un médico especialista, un psicólogo, etc.), te lo diré con total honestidad y te orientaré en la medida de lo posible. No acepto a clientas que no creo poder ayudar genuinamente.'
+        }
+    ];
+
+    const FaqItem: React.FC<{ faq: { question: string, answer: string } }> = ({ faq }) => {
+        const [isOpen, setIsOpen] = useState(false);
+        return (
+            <div className="border-b border-gray-200 py-4">
+                <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-700 hover:text-cyan-600">
+                    <span>{faq.question}</span>
+                    <i className={`fas fa-chevron-down transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
+                </button>
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-96 mt-4' : 'max-h-0'}`}>
+                    <p className="text-gray-600 pr-8">{faq.answer}</p>
+                </div>
+            </div>
+        );
+    };
+    
+    const SharePageSection: React.FC = () => {
+        const [pageUrl, setPageUrl] = useState('');
+        const [copySuccess, setCopySuccess] = useState('');
+
+        useEffect(() => {
+            setPageUrl(window.location.href);
+        }, []);
+
+        const shareText = "He encontrado este método de acompañamiento para la menopausia y creo que podría interesarte. ¡Echa un vistazo!";
+        const encodedUrl = encodeURIComponent(pageUrl);
+        const encodedText = encodeURIComponent(shareText);
+
+        const shareLinks = [
+            { name: 'WhatsApp', icon: 'fab fa-whatsapp', url: `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`, color: 'bg-green-500 hover:bg-green-600' },
+            { name: 'Facebook', icon: 'fab fa-facebook-f', url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, color: 'bg-blue-600 hover:bg-blue-700' },
+            { name: 'LinkedIn', icon: 'fab fa-linkedin-in', url: `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}`, color: 'bg-blue-700 hover:bg-blue-800' },
+             { name: 'Instagram', icon: 'fab fa-instagram', url: 'https://www.instagram.com/mila.ciudad/', color: 'bg-pink-500 hover:bg-pink-600' },
+            { name: 'Email', icon: 'fas fa-envelope', url: `mailto:?subject=Mira%20este%20m%C3%A9todo%20de%20Mila%20Ciudad&body=${encodedText}%0A%0A${encodedUrl}`, color: 'bg-gray-500 hover:bg-gray-600' },
+        ];
+        
+        const handleCopy = () => {
+            navigator.clipboard.writeText(pageUrl).then(() => {
+                setCopySuccess('¡Enlace copiado!');
+                setTimeout(() => setCopySuccess(''), 2000);
+            }, () => {
+                setCopySuccess('Error al copiar');
+                setTimeout(() => setCopySuccess(''), 2000);
+            });
+        };
+        
+        return (
+            <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-lg border text-center">
+                <h3 className="text-xl font-bold text-gray-700">¿Crees que esto puede ayudar a alguien más?</h3>
+                <p className="mt-2 text-gray-600">Si conoces a otras mujeres que se beneficiarían de este enfoque, compartir esta página es una forma maravillosa de apoyarlas.</p>
+                <div className="mt-5 flex flex-wrap justify-center items-center gap-3">
+                     {shareLinks.map(link => (
+                         <a 
+                            key={link.name} 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className={`w-10 h-10 flex items-center justify-center text-white rounded-full transition-transform transform hover:scale-110 ${link.color}`} 
+                            aria-label={`Compartir en ${link.name}`}
+                        >
+                            <i className={`${link.icon} text-lg`}></i>
+                        </a>
+                    ))}
+                     <button 
+                        onClick={handleCopy} 
+                        className="bg-gray-200 text-gray-700 h-10 px-4 rounded-full flex items-center gap-2 font-semibold hover:bg-gray-300 transition-colors"
+                    >
+                        <i className="fas fa-link"></i>
+                        <span>{copySuccess || 'Copiar Enlace'}</span>
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+
+    return (
+        <div className="animate-fade-in">
+            {/* Hero */}
+            <section className="bg-gray-50/50 py-16 md:py-24">
+                <div className="container mx-auto px-6 text-center">
+                    <AnimateOnScroll>
+                        <h1 className="text-4xl md:text-6xl font-extrabold font-montserrat gradient-text animate-gradient-text">Mi Método: Un Viaje de Acompañamiento Personalizado</h1>
+                        <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">He diseñado un camino para que <strong>recuperes el control de tu bienestar</strong>, transformes la incertidumbre en poder y te sientas acompañada en cada paso de esta nueva etapa.</p>
+                    </AnimateOnScroll>
+                </div>
+            </section>
+            
+            {/* Pain points */}
+            <section className="py-16 md:py-24">
+                 <div className="container mx-auto px-6">
+                    <AnimateOnScroll>
+                        <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-center text-gray-800">¿Te Sientes Identificada?</h2>
+                        <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">Si asientes con la cabeza al leer esto, quiero que sepas que <strong>no estás sola</strong> y que lo que sientes <strong>tiene solución.</strong></p>
+                    </AnimateOnScroll>
+                    <div className="grid md:grid-cols-3 gap-8 mt-12 max-w-5xl mx-auto">
+                        <AnimateOnScroll delay="0.1s">
+                             <div className="bg-white p-8 rounded-lg shadow-lg border h-full text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <i className="fas fa-cloud text-4xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-xl font-bold font-montserrat text-gray-700">Niebla Mental y Fatiga</h3>
+                                <p className="mt-2 text-gray-600">Sientes que tu energía <strong>se ha esfumado</strong> y te cuesta concentrarte en las tareas más simples.</p>
+                            </div>
+                        </AnimateOnScroll>
+                         <AnimateOnScroll delay="0.2s">
+                             <div className="bg-white p-8 rounded-lg shadow-lg border h-full text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <i className="fas fa-arrows-rotate text-4xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-xl font-bold font-montserrat text-gray-700">Cambios Inexplicables</h3>
+                                <p className="mt-2 text-gray-600">Tu cuerpo parece haber cambiado las reglas del juego <strong>sin avisar</strong>, con síntomas que no entiendes.</p>
+                            </div>
+                        </AnimateOnScroll>
+                        <AnimateOnScroll delay="0.3s">
+                            <div className="bg-white p-8 rounded-lg shadow-lg border h-full text-center hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <i className="fas fa-comments text-4xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-xl font-bold font-montserrat text-gray-700">Soledad e Incomprensión</h3>
+                                <p className="mt-2 text-gray-600">Te sientes <strong>invisible</strong>, como si nadie entendiera realmente por lo que estás pasando.</p>
+                            </div>
+                        </AnimateOnScroll>
+                    </div>
+                </div>
+            </section>
+            
+            {/* The Method */}
+            <section className="py-16 md:py-24 bg-gray-50/50">
+                <div className="container mx-auto px-6 max-w-5xl">
+                    <AnimateOnScroll>
+                        <h2 className="text-4xl md:text-5xl font-extrabold font-montserrat text-center gradient-text animate-gradient-text">EL Método MILACIUDAD+</h2>
+                        <p className="mt-4 text-center text-xl font-semibold text-cyan-700">Tu Viaje Guiado hacia la Plenitud</p>
+                    </AnimateOnScroll>
+                    
+                    <AnimateOnScroll className="mt-12">
+                        <div className="bg-cyan-50/50 p-8 md:p-12 rounded-xl shadow-xl border-t-4 border-cyan-200 text-center">
+                            <i className="fas fa-leaf text-4xl text-cyan-500"></i>
+                             <p className="mt-6 text-gray-700 text-lg leading-relaxed max-w-3xl mx-auto"><strong>MILACIUDAD+</strong> es más que un programa; es un <strong>espacio de transformación</strong> diseñado exclusivamente para la mujer que está lista para <strong>tomar las riendas de su bienestar.</strong> He fusionado mi doble experiencia, como enfermera y como mujer que ha navegado esta misma transición, para crear un sistema de acompañamiento que te proporciona <strong>claridad, herramientas validadas</strong> y el <strong>apoyo constante</strong> que necesitas para avanzar con confianza y serenidad.</p>
+                        </div>
+                    </AnimateOnScroll>
+                    
+                     <div className="grid md:grid-cols-2 gap-8 mt-8">
+                        <AnimateOnScroll delay="0.1s">
+                            <div className="bg-white p-8 rounded-lg shadow-lg border h-full">
+                                <i className="fas fa-calendar-check text-3xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-xl font-bold font-montserrat text-gray-700">Un Trimestre para tu Transformación</h3>
+                                <p className="mt-2 text-gray-600">Un marco de tiempo diseñado para <strong>profundizar, integrar hábitos y lograr cambios sostenibles.</strong> A través de 6 sesiones quincenales, construimos juntas una base sólida para tu bienestar a largo plazo.</p>
+                            </div>
+                        </AnimateOnScroll>
+                         <AnimateOnScroll delay="0.2s">
+                            <div className="bg-white p-8 rounded-lg shadow-lg border h-full">
+                                <i className="fas fa-hand-holding-heart text-3xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-xl font-bold font-montserrat text-gray-700">Acompañamiento Cercano y Constante</h3>
+                                <p className="mt-2 text-gray-600"><strong>No caminarás sola.</strong> Tienes acceso directo a mí vía WhatsApp para resolver dudas, compartir tus avances o recibir ese impulso de motivación justo cuando más lo necesitas.</p>
+                            </div>
+                        </AnimateOnScroll>
+                         <AnimateOnScroll delay="0.3s">
+                            <div className="bg-white p-8 rounded-lg shadow-lg border h-full">
+                                <i className="fas fa-map-signs text-3xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-xl font-bold font-montserrat text-gray-700">Una Hoja de Ruta Exclusiva para Ti</h3>
+                                <p className="mt-2 text-gray-600">Tu viaje es único. Co-crearemos un <strong>plan de acción a medida,</strong> basado en tus necesidades, tu estilo de vida y tus objetivos personales. No hay soluciones genéricas, solo tu camino.</p>
+                            </div>
+                        </AnimateOnScroll>
+                         <AnimateOnScroll delay="0.4s">
+                            <div className="bg-white p-8 rounded-lg shadow-lg border h-full">
+                                <i className="fas fa-piggy-bank text-3xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-xl font-bold font-montserrat text-gray-700">Una Inversión en tu Futuro Bienestar</h3>
+                                <p className="mt-2 text-gray-600">Esto no es un gasto, es una <strong>inversión en ti misma.</strong> Adquieres herramientas, conocimientos y una nueva perspectiva que te acompañarán mucho más allá de nuestros tres meses juntas.</p>
+                            </div>
+                        </AnimateOnScroll>
+                    </div>
+                </div>
+            </section>
+            
+             {/* Outcomes */}
+            <section className="py-16 md:py-24">
+                <div className="container mx-auto px-6 text-center max-w-5xl">
+                    <AnimateOnScroll>
+                        <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-gray-800">Al Finalizar Nuestro Viaje Juntas, Habrás Conseguido:</h2>
+                    </AnimateOnScroll>
+                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12">
+                        <AnimateOnScroll delay="0.1s">
+                            <div className="p-4">
+                                <i className="fas fa-bolt text-4xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-lg font-bold font-montserrat text-gray-700">Más Energía y Vitalidad</h3>
+                            </div>
+                        </AnimateOnScroll>
+                        <AnimateOnScroll delay="0.2s">
+                            <div className="p-4">
+                                <i className="fas fa-brain text-4xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-lg font-bold font-montserrat text-gray-700">Claridad Mental y Enfoque</h3>
+                            </div>
+                        </AnimateOnScroll>
+                        <AnimateOnScroll delay="0.3s">
+                            <div className="p-4">
+                                <i className="fas fa-toolbox text-4xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-lg font-bold font-montserrat text-gray-700">Herramientas para Gestionar Síntomas</h3>
+                            </div>
+                        </AnimateOnScroll>
+                        <AnimateOnScroll delay="0.4s">
+                            <div className="p-4">
+                                <i className="fas fa-hand-peace text-4xl text-cyan-500"></i>
+                                <h3 className="mt-4 text-lg font-bold font-montserrat text-gray-700">Paz con tu Cuerpo y esta Nueva Etapa</h3>
+                            </div>
+                        </AnimateOnScroll>
+                    </div>
+                </div>
+            </section>
+            
+            {/* Testimonials */}
+             <section className="py-16 md:py-24 bg-cyan-700 text-white">
+                <div className="container mx-auto px-6">
+                    <div className="text-center max-w-3xl mx-auto">
+                        <h2 className="text-3xl lg:text-4xl font-bold font-montserrat text-white">Lo que Dicen las Mujeres que ya han Recorrido este Camino</h2>
+                    </div>
+                    <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {testimonials.map((testimonial, index) => (
+                            <AnimateOnScroll key={index} delay={`${index * 100}ms`}>
+                                <div className="bg-cyan-600 p-6 rounded-xl shadow-lg h-full flex flex-col">
+                                    <p className="text-cyan-100 italic my-4 flex-grow">"{testimonial.quote}"</p>
+                                    <div className="mt-auto">
+                                        <p className="font-bold font-montserrat text-white">{testimonial.author}</p>
+                                        <p className="text-sm text-cyan-200">{testimonial.profession}, {testimonial.age} años</p>
+                                    </div>
+                                </div>
+                            </AnimateOnScroll>
+                        ))}
+                    </div>
+                </div>
+            </section>
+            
+            {/* CTA */}
+             <section className="py-16 md:py-24">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+                         <AnimateOnScroll>
+                            <img src="https://images.squidge.org/images/2025/11/01/Gemini_Generated_Image_anq9g2anq9g2anq9-Photoroom.webp" alt="Mila Ciudad" className="w-full h-auto max-w-md mx-auto rounded-lg shadow-xl" />
+                        </AnimateOnScroll>
+                        <AnimateOnScroll delay="0.2s">
+                            <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-gray-800">Tu Primer Paso Hacia el Cambio</h2>
+                            <h3 className="mt-4 text-xl font-semibold text-cyan-600">Agenda tu Sesión de Claridad Gratuita</h3>
+                            <p className="mt-4 text-gray-600">Este es tu espacio seguro y confidencial. Una conversación de 30-45 minutos, <strong>sin compromiso,</strong> diseñada para que te sientas escuchada y comprendida.</p>
+                            <ul className="mt-6 space-y-4">
+                                <li className="flex items-start">
+                                    <i className="fas fa-ear-listen text-2xl text-cyan-500 mr-4 mt-1"></i>
+                                    <div>
+                                        <h4 className="font-bold text-gray-700">Escucharé tu Historia</h4>
+                                        <p className="text-gray-600">Profundizaremos en tus <strong>desafíos y necesidades únicas</strong> para entender tu punto de partida.</p>
+                                    </div>
+                                </li>
+                                <li className="flex items-start">
+                                    <i className="fas fa-map-marked-alt text-2xl text-cyan-500 mr-4 mt-1"></i>
+                                    <div>
+                                        <h4 className="font-bold text-gray-700">Trazaré un Primer Mapa</h4>
+                                        <p className="text-gray-600">Te llevarás una <strong>visión clara</strong> de los posibles siguientes pasos hacia tu bienestar y tus objetivos.</p>
+                                    </div>
+                                </li>
+                                <li className="flex items-start">
+                                    <i className="fas fa-handshake text-2xl text-cyan-500 mr-4 mt-1"></i>
+                                    <div>
+                                        <h4 className="font-bold text-gray-700">Decidiré si Conectamos</h4>
+                                        <p className="text-gray-600">Al final, valoraremos juntas si mi método es el adecuado para ti. <strong>Sin presión, con total honestidad.</strong></p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div className="mt-8">
+                                <a href="https://calendar.app.google/e66VNHbHuun6zVz38" target="_blank" rel="noopener noreferrer" className="inline-block bg-cyan-600 text-white font-bold py-4 px-10 rounded-full hover:bg-cyan-700 transition-colors shadow-lg text-lg transform hover:-translate-y-1 animate-pulse-cta">
+                                    RESERVAR MI SESIÓN GRATUITA
+                                </a>
+                            </div>
+                        </AnimateOnScroll>
+                    </div>
+                </div>
+            </section>
+            
+            {/* Essential tools section as per previous request */}
+            <section className="py-16 md:py-24 bg-gray-50/50">
+                <AnimateOnScroll>
+                    <div className="container mx-auto px-6">
+                        <h2 className="text-4xl md:text-5xl font-extrabold font-montserrat text-center text-cyan-700 mb-12">Tus <strong>Herramientas Esenciales</strong></h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                            <div 
+                                onClick={() => navigate('menopausia')} 
+                                className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer h-full group"
+                            >
+                                <div className="relative w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                                    <img src="https://images.squidge.org/images/2025/11/02/guiamenomilaciduad-1.md.png" alt="Guía de Menopausia" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="p-6 flex flex-col flex-grow text-center">
+                                    <h3 className="text-xl font-bold font-montserrat text-cyan-700">Centro de Recursos para la Menopausia</h3>
+                                    <p className="mt-2 text-gray-600 text-sm flex-grow">Un espacio completo para entender, aceptar y vivir esta etapa con plenitud.</p>
+                                    <span className="mt-4 font-semibold text-cyan-600 group-hover:text-cyan-800 self-center">
+                                        Explorar &rarr;
+                                    </span>
+                                </div>
+                            </div>
+                            <div 
+                                onClick={() => navigate('diagnostico')} 
+                                className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer h-full group"
+                            >
+                                <div className="relative w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                                    <img src="https://images.squidge.org/images/2025/11/02/Gemini_Generated_Image_qukf08qukf08qukf-1.png" alt="Diagnóstico de Bienestar" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="p-6 flex flex-col flex-grow text-center">
+                                    <h3 className="text-xl font-bold font-montserrat text-cyan-700">Diagnóstico de Bienestar</h3>
+                                    <p className="mt-2 text-gray-600 text-sm flex-grow">Evalúa en <strong>2 minutos</strong> las áreas clave de tu salud y obtén una visión clara.</p>
+                                    <span className="mt-4 font-semibold text-cyan-600 group-hover:text-cyan-800 self-center">
+                                        Hacer diagnóstico &rarr;
+                                    </span>
+                                </div>
+                            </div>
+                            <LeadMagnetBanner
+                                title="Guía de <strong>dietas ideales</strong> gratuita"
+                                description="La dieta ideal en la menopausia <strong>no debe ser un castigo,</strong> sino un acto de amor propio que te permite nutrir tu cuerpo, equilibrar tus hormonas, fortalecer tus huesos y cuidar tu bienestar físico y emocional en esta nueva etapa de vida."
+                                imageUrl="https://images.squidge.org/images/2025/10/31/DIETA-MEDITERRANEA.md.webp"
+                                formId="dietas-ideales-servicios-compact"
+                                redirectUrl="https://dietas.milaciudad.com/"
+                                formspreeEndpoint="https://formspree.io/f/mzzkjklk"
+                                layout="vertical"
+                            />
+                            <LeadMagnetBanner
+                                title="Guía de <strong>salud activa</strong> gratuita"
+                                description="Aprende cómo cuidar tu salud, reconocer los síntomas y prevenir enfermedades como la <strong>diabetes, la hipertensión arterial, la hipercolesterolemia y la arteriosclerosis.</strong>"
+                                imageUrl="https://images.squidge.org/images/2025/10/31/Gemini_Generated_Image_81lp3y81lp3y81lp-processedlightpdf.com.md.webp"
+                                formId="guia-salud-activa-servicios-compact"
+                                redirectUrl="https://saludactiva.milaciudad.com/"
+                                formspreeEndpoint="https://formspree.io/f/meoprpbv"
+                                layout="vertical"
+                            />
+                        </div>
+                    </div>
+                </AnimateOnScroll>
+            </section>
+            
+            {/* FAQ */}
+             <section className="py-16 md:py-24">
+                <div className="container mx-auto px-6 max-w-3xl">
+                    <AnimateOnScroll>
+                        <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-center text-gray-800 mb-12">Preguntas Frecuentes</h2>
+                        <div className="space-y-2">
+                            {faqs.map((faq, index) => (
+                                <FaqItem key={index} faq={faq} />
+                            ))}
+                        </div>
+                    </AnimateOnScroll>
+                </div>
+            </section>
+
+             {/* Share Page */}
+             <section className="pb-16 md:pb-24">
+                 <div className="container mx-auto px-6">
+                    <AnimateOnScroll>
+                        <SharePageSection />
+                    </AnimateOnScroll>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+// --- MenopausePage ---
+export const MenopausePage: React.FC<PageProps> = ({ navigate }) => {
+    useSEOMetadata('Centro de Recursos de Menopausia | Mila Ciudad', 'Un espacio completo con información y herramientas para entender, aceptar y vivir la menopausia con plenitud.');
+    const [posts, setPosts] = useState<BlogPost[]>([]);
+    const [email, setEmail] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    
+    useEffect(() => {
+        getBlogPosts().then(setPosts);
+    }, []);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+        setError(null);
+        
+        const formData = new FormData();
+        formData.append('email', email);
+
+        try {
+            const response = await fetch('https://formspree.io/f/mqagygvl', {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' },
+            });
+
+            if (response.ok) {
+                setIsSubmitted(true);
+                setTimeout(() => {
+                    window.location.href = 'https://todosobrelamenopausia.milaciudad.com/';
+                }, 1500);
+            } else {
+                setError('Hubo un error al registrar tu correo. Inténtalo de nuevo.');
+            }
+        } catch (err) {
+            setError('Hubo un error de red. Por favor, revisa tu conexión.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const ResourceCard: React.FC<{post: BlogPost}> = ({post}) => (
+        <div onClick={() => navigate({ page: 'blog', slug: post.slug })} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer group h-full">
+            <div className="relative w-full h-40 overflow-hidden">
+                <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            </div>
+            <div className="p-4 flex flex-col flex-grow">
+                <h3 className="text-lg font-bold font-montserrat text-gray-700 mb-2">{post.title}</h3>
+                <p className="text-gray-600 text-sm mb-3 text-justify flex-grow">{post.excerpt}</p>
+                 <span className="font-semibold text-cyan-600 hover:text-cyan-800 transition-colors self-start mt-auto text-sm">
+                    Leer más &rarr;
+                </span>
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="animate-fade-in">
+            <header className="bg-cyan-700 text-white py-16 text-center">
+                <div className="container mx-auto px-6">
+                    <h1 className="text-4xl md:text-5xl font-bold font-montserrat">Centro de Recursos para la Menopausia</h1>
+                    <p className="mt-4 text-lg text-cyan-100 max-w-3xl mx-auto">Un espacio para entender, aceptar y vivir esta etapa con plenitud, fortaleza y autenticidad.</p>
+                </div>
+            </header>
+            <main className="container mx-auto px-6 py-12 md:py-16">
+                 <section className="mb-16">
+                    <div className="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-lg border">
+                        <div className="grid md:grid-cols-2 gap-8 items-center">
+                            <div className="text-center md:text-left">
+                                <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-cyan-700 uppercase">Mi Guía Esencial para la Menopausia</h2>
+                                <p className="mt-6 text-gray-600">Una guía <strong>completa</strong> para entender y navegar esta etapa con claridad, herramientas prácticas y serenidad. Descubre cómo transformar los síntomas en una oportunidad para <strong>cuidarte como nunca.</strong></p>
+                                <div className="mt-auto pt-6 w-full">
+                                    {isSubmitted ? (
+                                        <div className="text-center p-3 bg-green-100 text-green-800 rounded-md">
+                                            <p className="font-semibold">¡Gracias! Serás redirigido...</p>
+                                        </div>
+                                    ) : (
+                                        <form onSubmit={handleSubmit}>
+                                            <div className="flex flex-col sm:flex-row gap-2">
+                                                <input
+                                                    type="email"
+                                                    id="email-guia-esencial"
+                                                    name="email"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    placeholder="Tu mejor correo electrónico"
+                                                    required
+                                                    className="flex-grow p-3 bg-gray-100 border-transparent rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors text-sm"
+                                                    disabled={isSubmitting}
+                                                />
+                                                <button 
+                                                    type="submit" 
+                                                    className="bg-cyan-600 text-white font-bold py-3 px-5 rounded-md hover:bg-cyan-700 transition-colors shadow disabled:bg-gray-400 text-sm"
+                                                    disabled={isSubmitting}
+                                                >
+                                                    {isSubmitting ? '...' : '¡LA QUIERO!'}
+                                                </button>
+                                            </div>
+                                            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                                        </form>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex justify-center">
+                                <img src="https://images.squidge.org/images/2025/11/01/mila-ciudad-guia-meniopausia-Photoroom.md.png" alt="Mi Guía Esencial para la Menopausia" className="max-w-xs w-full animate-float" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section className="mb-16">
+                    <div className="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-lg border">
+                        <div className="grid md:grid-cols-2 gap-8 items-center">
+                            <div className="flex justify-center md:order-last">
+                                <img 
+                                    src="https://images.squidge.org/images/2025/11/02/Gemini_Generated_Image_qukf08qukf08qukf-1.png" 
+                                    alt="Diagnóstico de Bienestar" 
+                                    className="max-w-xs w-full transition-transform duration-300 hover:scale-105 animate-float" 
+                                />
+                            </div>
+                            <div className="text-center md:text-left">
+                                <h2 className="text-3xl md:text-4xl font-bold font-montserrat text-cyan-700 uppercase">Diagnóstico Rápido de Bienestar</h2>
+                                <p className="mt-6 text-gray-600">
+                                    Obtén claridad en <strong>menos de 2 minutos.</strong> Evalúa 6 áreas clave de tu salud para obtener una visión general de tu estado actual y descubrir tus puntos fuertes y las áreas que podrían necesitar más atención.
+                                </p>
+                                <button 
+                                    onClick={() => navigate('diagnostico')} 
+                                    className="mt-8 bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5"
+                                >
+                                    COMENZAR DIAGNÓSTICO
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="mb-16">
+                    <h2 className="text-3xl font-bold font-montserrat text-gray-700 mb-8 text-center">Para ti</h2>
+                    <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                        <LeadMagnetBanner
+                            title="Guía de <strong>dietas ideales</strong> gratuita"
+                            description="La dieta ideal en la menopausia <strong>no debe ser un castigo,</strong> sino un acto de amor propio que te permite nutrir tu cuerpo, equilibrar tus hormonas, fortalecer tus huesos y cuidar tu bienestar físico y emocional en esta nueva etapa de vida."
+                            imageUrl="https://images.squidge.org/images/2025/10/31/DIETA-MEDITERRANEA.md.webp"
+                            formId="dietas-ideales-menopausia-page"
+                            redirectUrl="https://dietas.milaciudad.com/"
+                            formspreeEndpoint="https://formspree.io/f/mzzkjklk"
+                            layout="vertical"
+                        />
+                        <LeadMagnetBanner
+                            title="Guía de <strong>salud activa</strong> gratuita"
+                            description="Aprende cómo cuidar tu salud, reconocer los síntomas y prevenir enfermedades como la <strong>diabetes, la hipertensión arterial, la hipercolesterolemia y la arteriosclerosis.</strong>"
+                            imageUrl="https://images.squidge.org/images/2025/10/31/Gemini_Generated_Image_81lp3y81lp3y81lp-processedlightpdf.com.md.webp"
+                            formId="guia-salud-activa-menopausia-page"
+                            redirectUrl="https://saludactiva.milaciudad.com/"
+                            formspreeEndpoint="https://formspree.io/f/meoprpbv"
+                            layout="vertical"
+                        />
+                    </div>
+                </section>
+
+                <section>
+                    <h2 className="text-3xl font-bold font-montserrat text-gray-700 mb-8 text-center">Entendiendo los Síntomas</h2>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {posts.filter(p => p.tags.includes('Síntomas')).map(p => <ResourceCard key={p.slug} post={p} />)}
+                    </div>
+                </section>
+                 <section className="mt-16">
+                    <h2 className="text-3xl font-bold font-montserrat text-gray-700 mb-8 text-center">Nutrición y Estilo de Vida</h2>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {posts.filter(p => p.tags.includes('Nutrición') || p.tags.includes('Ejercicio') || p.tags.includes('Sueño')).map(p => <ResourceCard key={p.slug} post={p} />)}
+                    </div>
+                </section>
+                 <section className="mt-16">
+                    <h2 className="text-3xl font-bold font-montserrat text-gray-700 mb-8 text-center">Salud Hormonal y Terapias</h2>
+                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {posts.filter(p => p.tags.includes('Salud Hormonal')).map(p => <ResourceCard key={p.slug} post={p} />)}
+                    </div>
+                </section>
+                <section className="mt-16">
+                    <h2 className="text-3xl font-bold font-montserrat text-gray-700 mb-8 text-center">Bienestar Emocional</h2>
+                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {posts.filter(p => p.tags.includes('Bienestar Emocional')).map(p => <ResourceCard key={p.slug} post={p} />)}
+                    </div>
+                </section>
+            </main>
+        </div>
+    );
+};
+
+// --- ShareResults Component ---
+const ShareResults: React.FC = () => {
     const [pageUrl, setPageUrl] = useState('');
     const [copySuccess, setCopySuccess] = useState('');
 
     useEffect(() => {
-        // Ensure this runs client-side as window is not defined server-side
-        setPageUrl(window.location.href);
+        setPageUrl(window.location.origin);
     }, []);
 
+    if (!pageUrl) return null;
+
+    const shareText = "He realizado el Diagnóstico de Bienestar de Mila Ciudad y me ha dado una visión muy clara de mi salud en esta etapa. ¡Te animo a que lo pruebes!";
+    const encodedUrl = encodeURIComponent(pageUrl);
+    const encodedText = encodeURIComponent(shareText);
+
+    const shareLinks = [
+        { name: 'WhatsApp', icon: 'fab fa-whatsapp', url: `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`, color: 'bg-green-500 hover:bg-green-600' },
+        { name: 'Facebook', icon: 'fab fa-facebook-f', url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, color: 'bg-blue-600 hover:bg-blue-700' },
+        { name: 'X', icon: 'fab fa-twitter', url: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`, color: 'bg-black hover:bg-gray-800' },
+        { name: 'Instagram', icon: 'fab fa-instagram', url: 'https://www.instagram.com/mila.ciudad/', color: 'bg-pink-500 hover:bg-pink-600' },
+        { name: 'Email', icon: 'fas fa-envelope', url: `mailto:?subject=${encodeURIComponent("Una herramienta de bienestar que te puede interesar")}&body=${encodedText}%0A%0A${encodedUrl}`, color: 'bg-gray-500 hover:bg-gray-600' },
+    ];
+    
     const handleCopy = () => {
-        if (!pageUrl) return;
         navigator.clipboard.writeText(pageUrl).then(() => {
-            setCopySuccess('¡Copiado!');
+            setCopySuccess('¡Enlace copiado!');
             setTimeout(() => setCopySuccess(''), 2000);
         }, () => {
             setCopySuccess('Error al copiar');
@@ -186,683 +806,305 @@ export const ServicesPage: React.FC<PageProps> = ({ navigate }) => {
         });
     };
 
-    const testimonials: Testimonial[] = [
-        {
-            quote: "Sentía que había perdido el control de mi cuerpo y mi mente. El método de Mila me dio un mapa claro y, <strong>por primera vez en años, sentí que no estaba sola.</strong> He recuperado mi energía y, lo más importante, la confianza en mí misma.",
-            author: "Laura G.",
-            age: 52,
-            profession: "Abogada",
-        },
-        {
-            quote: "La sesión de claridad fue reveladora. Mila tiene una capacidad increíble para escuchar y hacerte ver las cosas desde otra perspectiva. Salí de esa conversación con <strong>una calma y una motivación que no esperaba.</strong> Fue el primer paso para un cambio real.",
-            author: "Sofía M.",
-            age: 48,
-            profession: "Diseñadora Gráfica",
-        },
-        {
-            quote: "Dudaba si un coaching era para mí, pero la cercanía de Mila y su experiencia como enfermera me convencieron. <strong>Ha sido la mejor inversión en mi salud.</strong> Entiendo mi cuerpo y tengo herramientas para gestionar los síntomas que antes me desbordaban.",
-            author: "Carmen R.",
-            age: 55,
-            profession: "Profesora",
-        },
-        {
-            quote: "Gracias a Mila <strong>he vuelto a dormir noches enteras.</strong> Su enfoque integral, que combina nutrición, hábitos y gestión emocional, ha sido un cambio radical. Me siento más vital y con más claridad mental que hace diez años.",
-            author: "Isabel V.",
-            age: 50,
-            profession: "Empresaria",
-        }
-    ];
-
-    const faqs = [
-        {
-            question: "¿Esta sesión tiene algún coste?",
-            answer: "No, la Sesión de Claridad es <strong>100% gratuita y sin ningún tipo de compromiso.</strong> Es una conversación honesta para que nos conozcamos, para que yo pueda entender tus desafíos y para que tú puedas ver si mi enfoque resuena contigo."
-        },
-        {
-            question: "¿Qué pasa si después de la sesión decido que no es para mí?",
-            answer: "<strong>Absolutamente nada.</strong> Mi prioridad es tu bienestar. Si sientes que mi método no es lo que necesitas en este momento, o si yo misma considero que no soy la persona adecuada para ayudarte, te lo diré con total transparencia. El objetivo es que salgas de la sesión con claridad, no con una obligación."
-        },
-        {
-            question: "¿Se habla de precios en la sesión de claridad?",
-            answer: "El foco principal de la sesión es escucharte y aportarte valor. <strong>Solo si al final de nuestra conversación ambas sentimos que hay una conexión real</strong> y que mi programa MILACIUDAD+ es el siguiente paso lógico para ti, te explicaré todos los detalles, incluida la inversión, de forma clara y sin ninguna presión."
-        },
-        {
-            question: "¿Qué pasa si no soy candidata al programa?",
-            answer: "Mi compromiso es contigo. Si durante nuestra conversación considero que mis herramientas no son las que mejor se adaptan a tu situación particular, <strong>te lo diré con total honestidad.</strong> Siempre que sea posible, intentaré orientarte hacia otros recursos o profesionales que puedan ser de más ayuda para ti."
-        }
-    ];
-
-    const toggleFaq = (index: number) => {
-        setOpenFaq(openFaq === index ? null : index);
-    };
-
     return (
-    <div className="animate-fade-in bg-white">
-        {/* Header */}
-        <section className="py-16 md:py-24 bg-gray-50/50">
-            <AnimateOnScroll className="container mx-auto px-6 text-center max-w-4xl">
-                <h1 className="text-4xl md:text-5xl font-extrabold font-montserrat gradient-text">Mi Método: Un Viaje de <strong>Acompañamiento Personalizado</strong></h1>
-                <p className="mt-6 text-lg text-gray-600 leading-relaxed">He diseñado un camino para que <strong>recuperes el control de tu bienestar,</strong> transformes la incertidumbre en poder y te sientas acompañada en cada paso de esta nueva etapa.</p>
-            </AnimateOnScroll>
-        </section>
-
-        {/* 1. Problem Identification */}
-        <section className="py-16 md:py-24">
-            <div className="container mx-auto px-6 max-w-5xl">
-                <AnimateOnScroll className="text-center">
-                    <h2 className="text-3xl font-bold font-montserrat text-gray-800">¿Te Sientes Identificada?</h2>
-                    <p className="mt-4 text-gray-600 max-w-2xl mx-auto">Si asientes con la cabeza al leer esto, quiero que sepas que <strong>no estás sola</strong> y que lo que sientes <strong>tiene solución.</strong></p>
-                </AnimateOnScroll>
-                <div className="grid md:grid-cols-3 gap-8 mt-12">
-                    <AnimateOnScroll className="h-full">
-                        <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-cyan-500 text-center h-full">
-                            <i className="fas fa-cloud text-5xl text-cyan-400 mb-4"></i>
-                            <h3 className="font-bold font-montserrat text-xl text-gray-700">Niebla Mental y Fatiga</h3>
-                            <p className="mt-2 text-gray-600">Sientes que tu <strong>energía se ha esfumado</strong> y te cuesta concentrarte en las tareas más simples.</p>
-                        </div>
-                    </AnimateOnScroll>
-                    <AnimateOnScroll className="h-full" delay="0.1s">
-                        <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-cyan-500 text-center h-full">
-                            <i className="fas fa-sync-alt text-5xl text-cyan-400 mb-4"></i>
-                            <h3 className="font-bold font-montserrat text-xl text-gray-700">Cambios Inexplicables</h3>
-                            <p className="mt-2 text-gray-600">Tu cuerpo parece haber cambiado las reglas del juego <strong>sin avisar,</strong> con síntomas que no entiendes.</p>
-                        </div>
-                    </AnimateOnScroll>
-                    <AnimateOnScroll className="h-full" delay="0.2s">
-                        <div className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-cyan-500 text-center h-full">
-                            <i className="far fa-comment-dots text-5xl text-cyan-400 mb-4"></i>
-                            <h3 className="font-bold font-montserrat text-xl text-gray-700">Soledad e Incomprensión</h3>
-                            <p className="mt-2 text-gray-600">Te sientes <strong>invisible,</strong> como si nadie entendiera realmente por lo que estás pasando.</p>
-                        </div>
-                    </AnimateOnScroll>
-                </div>
-            </div>
-        </section>
-
-        {/* 2. El Método MILACIUDAD+ */}
-        <section className="py-16 md:py-24 bg-gray-50/50">
-            <div className="container mx-auto px-6 max-w-5xl text-center">
-                <AnimateOnScroll>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-montserrat gradient-text animate-gradient-text">
-                        El Método MILACIUDAD+
-                    </h2>
-                    <p className="mt-4 text-xl md:text-2xl text-gray-700 font-lora">
-                        Tu Viaje Guiado hacia la <strong>Plenitud</strong>
-                    </p>
-                </AnimateOnScroll>
-                <AnimateOnScroll className="mt-12 max-w-3xl mx-auto">
-                    <div className="bg-cyan-50/30 p-10 md:p-12 rounded-xl shadow-lg border-t-4 border-cyan-200 text-center">
-                        <i className="fas fa-spa text-5xl text-cyan-400 mb-6"></i>
-                        <p className="text-lg text-gray-700 leading-relaxed">
-                            <strong className="font-montserrat text-cyan-600">MILACIUDAD+</strong> es más que un programa; es un <strong>espacio de transformación</strong> diseñado exclusivamente para la mujer que está lista para <strong>tomar las riendas de su bienestar.</strong> He fusionado mi doble experiencia, como enfermera y como mujer que ha navegado esta misma transición, para crear un sistema de acompañamiento que te proporciona <strong>claridad, herramientas validadas</strong> y el <strong>apoyo constante</strong> que necesitas para avanzar con confianza y serenidad.
-                        </p>
-                    </div>
-                </AnimateOnScroll>
-                
-                <div className="grid md:grid-cols-2 gap-8 mt-12 text-left">
-                    <AnimateOnScroll>
-                        <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-cyan-100 hover:-translate-y-1 h-full">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-cyan-100 text-cyan-600 p-3 rounded-full">
-                                    <i className="fas fa-calendar-check text-2xl w-8 text-center"></i>
-                                </div>
-                                <h3 className="text-xl font-bold font-montserrat text-gray-800">Un Trimestre para tu Transformación</h3>
-                            </div>
-                            <p className="mt-4 text-gray-600">Un marco de tiempo diseñado para <strong>profundizar, integrar hábitos y lograr cambios sostenibles.</strong> A través de 6 sesiones quincenales, construimos juntas una base sólida para tu bienestar a largo plazo.</p>
-                        </div>
-                    </AnimateOnScroll>
-                    <AnimateOnScroll delay="0.1s">
-                        <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-cyan-100 hover:-translate-y-1 h-full">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-cyan-100 text-cyan-600 p-3 rounded-full">
-                                    <i className="fas fa-headset text-2xl w-8 text-center"></i>
-                                </div>
-                                <h3 className="text-xl font-bold font-montserrat text-gray-800">Acompañamiento Cercano y Constante</h3>
-                            </div>
-                            <p className="mt-4 text-gray-600"><strong>No caminarás sola.</strong> Tienes acceso directo a mí vía WhatsApp para resolver dudas, compartir tus avances o recibir ese impulso de motivación justo cuando más lo necesitas.</p>
-                        </div>
-                    </AnimateOnScroll>
-                    <AnimateOnScroll delay="0.2s">
-                        <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-cyan-100 hover:-translate-y-1 h-full">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-cyan-100 text-cyan-600 p-3 rounded-full">
-                                    <i className="fas fa-drafting-compass text-2xl w-8 text-center"></i>
-                                </div>
-                                <h3 className="text-xl font-bold font-montserrat text-gray-800">Una Hoja de Ruta Exclusiva para Ti</h3>
-                            </div>
-                            <p className="mt-4 text-gray-600">Tu viaje es único. <strong>Co-crearemos un plan de acción a medida,</strong> basado en tus necesidades, tu estilo de vida y tus objetivos personales. No hay soluciones genéricas, solo tu camino.</p>
-                        </div>
-                    </AnimateOnScroll>
-                    <AnimateOnScroll delay="0.3s">
-                        <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-cyan-100 hover:-translate-y-1 h-full">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-cyan-100 text-cyan-600 p-3 rounded-full">
-                                    <i className="fas fa-leaf text-2xl w-8 text-center"></i>
-                                </div>
-                                <h3 className="text-xl font-bold font-montserrat text-gray-800">Una Inversión en tu Futuro Bienestar</h3>
-                            </div>
-                            <p className="mt-4 text-gray-600">Esto no es un gasto, es una <strong>inversión en ti misma.</strong> Adquieres herramientas, conocimientos y una nueva perspectiva que te acompañarán mucho más allá de nuestros tres meses juntas.</p>
-                        </div>
-                    </AnimateOnScroll>
-                </div>
-            </div>
-        </section>
-
-        {/* 3. Benefits */}
-        <section className="py-16 md:py-24">
-            <div className="container mx-auto px-6 max-w-5xl">
-                <AnimateOnScroll className="text-center">
-                    <h2 className="text-3xl font-bold font-montserrat text-gray-800">Al Finalizar Nuestro Viaje Juntas, Habrás Conseguido:</h2>
-                </AnimateOnScroll>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
-                    <AnimateOnScroll className="text-center p-6"><i className="fas fa-bolt text-4xl text-cyan-500 mb-3"></i><h4 className="font-semibold font-montserrat">Más <strong>Energía y Vitalidad</strong></h4></AnimateOnScroll>
-                    <AnimateOnScroll className="text-center p-6" delay="0.1s"><i className="fas fa-brain text-4xl text-cyan-500 mb-3"></i><h4 className="font-semibold font-montserrat"><strong>Claridad Mental</strong> y Enfoque</h4></AnimateOnScroll>
-                    <AnimateOnScroll className="text-center p-6" delay="0.2s"><i className="fas fa-heart-pulse text-4xl text-cyan-500 mb-3"></i><h4 className="font-semibold font-montserrat"><strong>Herramientas</strong> para Gestionar Síntomas</h4></AnimateOnScroll>
-                    <AnimateOnScroll className="text-center p-6" delay="0.3s"><i className="fas fa-spa text-4xl text-cyan-500 mb-3"></i><h4 className="font-semibold font-montserrat"><strong>Paz con tu Cuerpo</strong> y esta Nueva Etapa</h4></AnimateOnScroll>
-                </div>
-            </div>
-        </section>
-
-        {/* 4. Testimonials */}
-        <section className="py-12 md:py-20 bg-cyan-700 text-white">
-            <div className="container mx-auto px-6 max-w-7xl">
-                <AnimateOnScroll className="text-center">
-                    <h2 className="text-3xl font-bold font-montserrat">Lo que Dicen las Mujeres que ya han Recorrido este Camino</h2>
-                </AnimateOnScroll>
-                <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {testimonials.map((testimonial, index) => (
-                        <AnimateOnScroll key={index} className="h-full" delay={`${index * 0.1}s`}>
-                            <div className="bg-cyan-800 p-6 rounded-lg shadow-lg flex flex-col text-center h-full transition-all duration-300 transform hover:-translate-y-2 hover:shadow-cyan-900/50 hover:shadow-xl">
-                                <p className="text-base italic text-cyan-100 flex-grow" dangerouslySetInnerHTML={{ __html: `"${testimonial.quote}"` }}></p>
-                                <div className="mt-4">
-                                    <p className="font-bold">- {testimonial.author}</p>
-                                    <p className="text-sm text-cyan-200">{testimonial.age} años, {testimonial.profession}</p>
-                                </div>
-                            </div>
-                        </AnimateOnScroll>
+        <AnimateOnScroll className="mt-16">
+            <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg border text-center">
+                <h2 className="text-2xl md:text-3xl font-bold font-montserrat text-cyan-700">¿Te ha aportado claridad?</h2>
+                <p className="mt-3 text-gray-600">Ayuda a que otras mujeres descubran esta herramienta gratuita. ¡Compartir es cuidar!</p>
+                <div className="mt-6 flex flex-wrap justify-center items-center gap-4">
+                    {shareLinks.map(link => (
+                         <a 
+                            key={link.name} 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className={`w-12 h-12 flex items-center justify-center text-white rounded-full transition-transform transform hover:scale-110 ${link.color}`} 
+                            aria-label={`Compartir en ${link.name}`}
+                        >
+                            <i className={`${link.icon} text-xl`}></i>
+                        </a>
                     ))}
-                </div>
-            </div>
-        </section>
-
-        {/* 5. CTA - Clarity Session */}
-        <AnimateOnScroll>
-            <section className="py-20 md:py-32 bg-white">
-                <div className="container mx-auto px-6 max-w-6xl">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        {/* Image */}
-                        <div className="flex justify-center">
-                            <img 
-                                src="https://images.squidge.org/images/2025/10/29/Gemini_Generated_Image_anq9g2anq9g2anq9-Photoroom.md.webp" 
-                                alt="Mila Ciudad" 
-                                className="rounded-lg shadow-2xl max-w-md w-full transform transition-transform duration-300 hover:scale-105"
-                            />
-                        </div>
-
-                        {/* Content */}
-                        <div>
-                            <h2 className="text-4xl font-bold font-montserrat text-gray-800">Tu Primer Paso Hacia el Cambio</h2>
-                            <p className="mt-4 text-lg font-semibold text-cyan-600">Agenda tu <strong>Sesión de Claridad Gratuita</strong></p>
-                            <p className="mt-4 text-gray-600 leading-relaxed">
-                                Este es tu espacio seguro y confidencial. <strong>Una conversación de 30-45 minutos, sin compromiso,</strong> diseñada para que te sientas escuchada y comprendida.
-                            </p>
-                            
-                            <div className="mt-8 space-y-6">
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-cyan-100 text-cyan-600 p-3 rounded-full mt-1">
-                                        <i className="fas fa-ear-listen text-2xl w-8 text-center"></i>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold font-montserrat text-lg text-gray-700">Escucharé tu Historia</h4>
-                                        <p className="text-gray-600">Profundizaremos en tus <strong>desafíos y necesidades únicas</strong> para entender tu punto de partida.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-cyan-100 text-cyan-600 p-3 rounded-full mt-1">
-                                        <i className="fas fa-compass text-2xl w-8 text-center"></i>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold font-montserrat text-lg text-gray-700">Trazaré un Primer Mapa</h4>
-                                        <p className="text-gray-600">Te llevarás una <strong>visión clara</strong> de los posibles siguientes pasos hacia tu bienestar y tus objetivos.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-cyan-100 text-cyan-600 p-3 rounded-full mt-1">
-                                        <i className="fas fa-hands-helping text-2xl w-8 text-center"></i>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold font-montserrat text-lg text-gray-700">Decidiré si Conectamos</h4>
-                                        <p className="text-gray-600">Al final, valoraremos juntas si mi método es el adecuado para ti. <strong>Sin presión, con total honestidad.</strong></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1xusc8tIardp1BNw4BXAY6IuRIxpqy-d8N5C1El2Hfo_30ls6gLiTrmGImyoHyy1xamV3wfzU3" target="_blank" rel="noopener noreferrer" className="mt-10 inline-block bg-cyan-600 text-white font-bold py-4 px-10 rounded-full hover:bg-cyan-700 transition-colors shadow-xl text-lg transform hover:-translate-y-1">
-                                RESERVAR MI SESIÓN GRATUITA
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </AnimateOnScroll>
-
-
-        {/* 6. FAQ */}
-        <section className="py-16 md:py-24 bg-gray-50/50">
-            <div className="container mx-auto px-6 max-w-3xl">
-                <AnimateOnScroll className="text-center mb-12">
-                    <h2 className="text-3xl font-bold font-montserrat text-gray-800">Preguntas Frecuentes</h2>
-                </AnimateOnScroll>
-                <div className="space-y-4">
-                    {faqs.map((faq, index) => (
-                        <AnimateOnScroll key={index} delay={`${index * 0.1}s`}>
-                            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-                                <button
-                                    onClick={() => toggleFaq(index)}
-                                    className="w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700"
-                                >
-                                    <span>{faq.question}</span>
-                                    <i className={`fas fa-chevron-down transition-transform duration-300 ${openFaq === index ? 'rotate-180' : ''}`}></i>
-                                </button>
-                                <div className={`transition-all duration-500 ease-in-out ${openFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                    <div className="p-5 pt-0 text-gray-600">
-                                        <p dangerouslySetInnerHTML={{ __html: faq.answer }}></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </AnimateOnScroll>
-                    ))}
-                </div>
-            </div>
-        </section>
-
-        {/* 7. Share Section */}
-        {pageUrl && (
-            <AnimateOnScroll>
-                <section className="py-16 md:py-24 bg-white">
-                    <div className="container mx-auto px-6 max-w-3xl">
-                        <div className="p-8 bg-gray-50/50 rounded-lg shadow-lg border text-center">
-                            <i className="fas fa-share-alt text-4xl text-cyan-500 mb-4"></i>
-                            <h3 className="text-2xl font-bold font-montserrat text-cyan-700">¿Crees que esto puede ayudar a alguien más?</h3>
-                            <p className="mt-2 text-gray-600 max-w-md mx-auto">Si conoces a otras mujeres que se beneficiarían de este enfoque, <strong>compartir esta página</strong> es una forma maravillosa de apoyarlas.</p>
-                            <div className="mt-6 flex flex-wrap justify-center items-center gap-4">
-                                {/* WhatsApp */}
-                                <a href={`https://wa.me/?text=${encodeURIComponent("He encontrado este método para la menopausia de Mila Ciudad y creo que podría interesarte. ¡Echa un vistazo!")}%20${encodeURIComponent(pageUrl)}`} target="_blank" rel="noopener noreferrer" className="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-green-600 transition-colors transform hover:scale-110" aria-label="Compartir en WhatsApp">
-                                    <i className="fab fa-whatsapp"></i>
-                                </a>
-                                {/* Facebook */}
-                                <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`} target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-blue-700 transition-colors transform hover:scale-110" aria-label="Compartir en Facebook">
-                                    <i className="fab fa-facebook-f"></i>
-                                </a>
-                                {/* LinkedIn */}
-                                <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent("Un método para la menopausia que te puede interesar")}&summary=${encodeURIComponent("He encontrado este método de Mila Ciudad y creo que podría interesarte.")}`} target="_blank" rel="noopener noreferrer" className="bg-blue-700 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-blue-800 transition-colors transform hover:scale-110" aria-label="Compartir en LinkedIn">
-                                    <i className="fab fa-linkedin-in"></i>
-                                </a>
-                                {/* Instagram Link to profile */}
-                                <a href="https://www.instagram.com/mila.ciudad/" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:opacity-90 transition-opacity transform hover:scale-110" aria-label="Visitar Instagram">
-                                    <i className="fab fa-instagram"></i>
-                                </a>
-                                {/* Email */}
-                                <a href={`mailto:?subject=${encodeURIComponent("Un método que te puede interesar")}&body=${encodeURIComponent("He encontrado este método para la menopausia de Mila Ciudad y creo que podría interesarte. ¡Echa un vistazo!")}%0D%0A%0D%0A${pageUrl}`} className="bg-gray-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-gray-600 transition-colors transform hover:scale-110" aria-label="Compartir por correo electrónico">
-                                    <i className="fas fa-envelope"></i>
-                                </a>
-                                {/* Copy Link */}
-                                <button onClick={handleCopy} className="bg-cyan-600 text-white h-12 px-6 rounded-full flex items-center justify-center hover:bg-cyan-700 transition-colors transform hover:scale-105">
-                                    <i className="fas fa-link mr-2"></i> {copySuccess || 'Copiar Enlace'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </AnimateOnScroll>
-        )}
-    </div>
-    );
-};
-
-
-// --- MenopausePage ---
-export const MenopausePage: React.FC<PageProps> = ({ navigate }) => {
-    useSEOMetadata(
-        'Centro de Recursos para la Menopausia | Mila Ciudad',
-        'Información, herramientas y estrategias basadas en la evidencia para que navegues la menopausia con confianza, poder y serenidad.'
-    );
-    const [posts, setPosts] = useState<BlogPost[]>([]);
-
-    useEffect(() => {
-        getBlogPosts().then(setPosts);
-    }, []);
-
-    const symptoms = [
-        { name: 'Niebla Mental', icon: 'fa-cloud', description: 'Olvidos, falta de concentración y esa sensación de confusión.', linkSlug: 'no-estoy-perdiendo-memoria-cerebro-menopausia' },
-        { name: 'Insomnio y Sofocos', icon: 'fa-moon', description: 'Noches interrumpidas y calores súbitos que agotan tu energía.', linkSlug: 'sueno-perdido-estrategia-enfermera' },
-        { name: 'Ansiedad y Humor', icon: 'fa-heart-pulse', description: 'Cambios de humor, irritabilidad y una ansiedad que no entiendes.', linkSlug: 'el-miedo-paraliza-tu-valia' },
-        { name: 'Cambios Físicos', icon: 'fa-weight-scale', description: 'Aumento de peso, cambios en la piel y dolores articulares.', linkSlug: 'metabolismo-menopausia-no-esta-roto' },
-    ];
-
-    const keyArticles = posts.filter(p => ['resistencia-insulina-saboteador-silencioso-menopausia', 'hormonas-revolucion-perimenopausia'].includes(p.slug));
-
-    const SimpleArticleCard: React.FC<{ post: BlogPost }> = ({ post }) => (
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-2 flex flex-col">
-            <img src={post.imageUrl} alt={post.title} className="w-full h-48 object-contain bg-gray-50" />
-            <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold font-montserrat text-gray-800">{post.title}</h3>
-                <p className="mt-2 text-gray-600 text-sm flex-grow text-justify">{post.excerpt}</p>
-                <button onClick={() => navigate({ page: 'blog', postSlug: post.slug, originPage: 'menopausia' })} className="mt-4 font-semibold text-cyan-600 hover:text-cyan-800 self-start">
-                    Leer artículo &rarr;
-                </button>
-            </div>
-        </div>
-    );
-
-    return (
-        <div className="animate-fade-in bg-white">
-            {/* Header */}
-            <section className="py-16 md:py-24 bg-gray-50/50">
-                <div className="container mx-auto px-6 text-center max-w-4xl">
-                    <h1 className="text-4xl md:text-5xl font-extrabold font-montserrat gradient-text">Tu Centro de Recursos para la Menopausia</h1>
-                    <p className="mt-6 text-lg text-gray-600 leading-relaxed">Información, herramientas y estrategias <strong>basadas en la evidencia</strong> para que navegues esta etapa con <strong>confianza, poder y serenidad.</strong></p>
-                </div>
-            </section>
-
-            {/* Symptoms Section */}
-            <section className="py-16 md:py-24">
-                <div className="container mx-auto px-6 max-w-6xl">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold font-montserrat text-gray-800">Navega por Síntomas</h2>
-                        <p className="mt-4 text-gray-600 max-w-2xl mx-auto">Haz clic en <strong>tu mayor desafío</strong> para encontrar artículos y soluciones específicas.</p>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {symptoms.map((symptom) => (
-                            <div key={symptom.name} onClick={() => navigate({ page: 'blog', postSlug: symptom.linkSlug, originPage: 'menopausia' })} className="bg-white p-6 rounded-lg shadow-lg border-t-4 border-cyan-500 text-center transition-all duration-300 hover:shadow-cyan-200 hover:-translate-y-2 cursor-pointer flex flex-col">
-                                <i className={`fas ${symptom.icon} text-5xl text-cyan-400 mb-4`}></i>
-                                <h3 className="font-bold font-montserrat text-xl text-gray-700">{symptom.name}</h3>
-                                <p className="mt-2 text-gray-600 text-sm flex-grow">{symptom.description}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Key Articles Section */}
-            {keyArticles.length > 0 && (
-                <section className="py-16 md:py-24 bg-gray-50/50">
-                    <div className="container mx-auto px-6 max-w-5xl">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold font-montserrat text-gray-800">Lecturas Clave para Entender esta Etapa</h2>
-                            <p className="mt-4 text-gray-600 max-w-2xl mx-auto">Dos artículos <strong>esenciales</strong> para comprender los cambios que estás viviendo.</p>
-                        </div>
-                        <div className="grid md:grid-cols-2 gap-8">
-                            {keyArticles.map(post => <SimpleArticleCard key={post.slug} post={post} />)}
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {/* Tools Section */}
-            <section className="py-16 md:py-24">
-                <div className="container mx-auto px-6 max-w-6xl">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold font-montserrat text-gray-800">Tus Herramientas Esenciales</h2>
-                        <p className="mt-4 text-gray-600 max-w-2xl mx-auto">Empieza a <strong>tomar el control hoy mismo</strong> con estas guías prácticas.</p>
-                    </div>
-                    <div className="grid lg:grid-cols-5 gap-8">
-                        <div className="lg:col-span-3">
-                            <LeadMagnetBanner
-                                title="MI GUÍA <strong>ESENCIAL</strong> PARA LA MENOPAUSIA"
-                                description={`
-                                    <p class="mb-4">Una <strong>guía completa</strong> para entender y navegar esta etapa con claridad, herramientas prácticas y serenidad. Descubre cómo transformar los síntomas en una oportunidad para <strong>cuidarte como nunca.</strong></p>
-                                `}
-                                imageUrl="https://images.squidge.org/images/2025/11/01/mila-ciudad-guia-meniopausia-Photoroom.md.png"
-                                formId="guia-menopausia-page"
-                                redirectUrl="https://todosobrelamenopausia.milaciudad.com/"
-                                formspreeEndpoint="https://formspree.io/f/mqagygvl"
-                                layout="vertical"
-                                imageFit="contain"
-                            />
-                        </div>
-                        <div className="lg:col-span-2 bg-cyan-50/80 rounded-2xl shadow-lg border border-cyan-100/80 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 h-full flex flex-col p-8 md:p-10 text-center items-center justify-center">
-                             <i className="fas fa-spa text-6xl text-cyan-300 mb-6"></i>
-                            <h2 className="text-3xl font-bold font-montserrat text-cyan-700">Diagnóstico de Bienestar</h2>
-                            <p className="mt-4 text-gray-600 leading-relaxed flex-grow">Evalúa en <strong>2 minutos</strong> las áreas clave de tu salud y obtén una <strong>visión clara</strong> de tu estado actual para saber por dónde empezar.</p>
-                             <button onClick={() => navigate({ page: 'diagnostico' })} className="mt-6 bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5">
-                                HACER EL DIAGNÓSTICO
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Final CTA Section */}
-            <section className="py-20 md:py-32 bg-cyan-700 text-white">
-                <div className="container mx-auto px-6 text-center max-w-3xl">
-                    <h2 className="text-4xl font-bold font-montserrat">¿Lista para un Plan Personalizado?</h2>
-                    <p className="mt-6 text-lg text-cyan-100 leading-relaxed">La información es el primer paso, pero <strong>el acompañamiento cercano marca la diferencia.</strong> Si quieres ir más allá de los consejos generales y crear una hoja de ruta <strong>adaptada 100% a ti,</strong> estoy aquí para ayudarte.</p>
-                    <button onClick={() => navigate({ page: 'servicios' })} className="mt-10 bg-white text-cyan-700 font-bold py-4 px-10 rounded-full hover:bg-gray-100 transition-colors shadow-xl text-lg transform hover:-translate-y-1">
-                        DESCUBRE MI MÉTODO
+                     <button 
+                        onClick={handleCopy} 
+                        className="bg-gray-200 text-gray-700 h-12 px-5 rounded-full flex items-center gap-2 font-semibold hover:bg-gray-300 transition-colors"
+                    >
+                        <i className="fas fa-link"></i>
+                        <span>{copySuccess || 'Copiar enlace'}</span>
                     </button>
                 </div>
-            </section>
-        </div>
+            </div>
+        </AnimateOnScroll>
     );
 };
 
 
 // --- DiagnosticPage ---
 export const DiagnosticPage: React.FC<PageProps> = ({ navigate }) => {
-    useSEOMetadata(
-        'Diagnóstico de Bienestar | Evalúa tu Salud en la Menopausia',
-        'Evalúa en 2 minutos las áreas clave de tu salud y obtén una visión clara de tu estado actual para saber por dónde empezar a mejorar tu bienestar.'
-    );
-    const [step, setStep] = useState(0);
-    const [answers, setAnswers] = useState<number[]>(new Array(12).fill(0));
-    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-    const [pageUrl, setPageUrl] = useState('');
-    const [copySuccess, setCopySuccess] = useState('');
+    useSEOMetadata('Diagnóstico de Bienestar | Mila Ciudad', 'Evalúa en 2 minutos las áreas clave de tu salud y obtén una visión clara de tu bienestar actual.');
+
+    const [step, setStep] = useState(0); // 0 = intro, 1-6 = questions, 7 = results
+    const [answers, setAnswers] = useState<{[key: string]: number}>({});
+    const [sliderValue, setSliderValue] = useState(5);
+    const [isLoading, setIsLoading] = useState(false);
+    const [analysisResult, setAnalysisResult] = useState<string | null>(null);
+    const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
 
     useEffect(() => {
-        setPageUrl(window.location.href);
+        getBlogPosts().then(setAllPosts);
     }, []);
 
-    const handleCopy = () => {
-        if (!pageUrl) return;
-        navigator.clipboard.writeText(pageUrl).then(() => {
-            setCopySuccess('¡Copiado!');
-            setTimeout(() => setCopySuccess(''), 2000);
-        }, () => {
-            setCopySuccess('Error al copiar');
-            setTimeout(() => setCopySuccess(''), 2000);
-        });
-    };
+    const areas = [
+        { name: 'Sueño', icon: 'fa-moon', tags: ['Sueño', 'Insomnio'] },
+        { name: 'Energía', icon: 'fa-bolt', tags: ['Estilo de Vida', 'Nutrición'] },
+        { name: 'Estado de Ánimo', icon: 'fa-face-smile', tags: ['Bienestar Emocional', 'Miedo', 'Autoestima'] },
+        { name: 'Nutrición', icon: 'fa-apple-whole', tags: ['Nutrición', 'Metabolismo', 'Peso', 'Resistencia a la Insulina'] },
+        { name: 'Actividad Física', icon: 'fa-person-walking', tags: ['Ejercicio', 'Fuerza', 'Salud Ósea'] },
+        { name: 'Claridad Mental', icon: 'fa-brain', tags: ['Menopausia', 'Síntomas'] }
+    ];
     
     const questions = [
-        // Síntomas Físicos
-        { category: 'Síntomas Físicos', question: '¿Con qué frecuencia experimentas sofocos o sudores nocturnos?' },
-        { category: 'Síntomas Físicos', question: '¿Cómo calificarías la calidad de tu sueño?' },
-        { category: 'Síntomas Físicos', question: '¿Sientes dolores articulares o musculares inexplicables?' },
-        { category: 'Síntomas Físicos', question: '¿Has notado cambios en tu piel (sequedad) o cabello (caída)?' },
-        // Bienestar Emocional
-        { category: 'Bienestar Emocional', question: '¿Experimentas cambios de humor, irritabilidad o ansiedad?' },
-        { category: 'Bienestar Emocional', question: '¿Sientes una falta de motivación o interés en actividades que antes disfrutabas?' },
-        { category: 'Bienestar Emocional', question: '¿Cómo está tu nivel de estrés en el día a día?' },
-        { category: 'Bienestar Emocional', question: '¿Has notado una disminución de la libido o molestias íntimas?' },
-        // Energía y Estilo de Vida
-        { category: 'Energía y Estilo de Vida', question: '¿Cómo describirías tus niveles de energía a lo largo del día?' },
-        { category: 'Energía y Estilo de Vida', question: '¿Sufres de "niebla mental", olvidos o dificultad para concentrarte?' },
-        { category: 'Energía y Estilo de Vida', question: '¿Has notado un aumento de peso, especialmente en la zona abdominal?' },
-        { category: 'Energía y Estilo de Vida', question: '¿Con qué frecuencia realizas ejercicio o actividad física?' },
+        "En una escala del 1 al 10, ¿cómo calificarías la calidad de tu sueño nocturno?",
+        "Valora tus niveles de energía y vitalidad a lo largo del día.",
+        "¿Qué tan estable y positivo consideras que es tu estado de ánimo general?",
+        "¿Cómo calificarías tus hábitos de alimentación en cuanto a equilibrio y salud?",
+        "Evalúa tu nivel de actividad física y movimiento en tu rutina semanal.",
+        "¿Cómo puntuarías tu claridad mental, memoria y capacidad de concentración?"
     ];
     
-    const options = [
-        'Nada / Nunca',
-        'Un poco / A veces',
-        'Bastante / Frecuentemente',
-        'Mucho / Casi siempre'
-    ];
-    
-    const handleAnswer = (value: number) => {
-        setSelectedAnswer(value);
+    const generateAnalysis = async (currentAnswers: { [key: string]: number }) => {
+        setIsLoading(true);
+        setAnalysisResult(null);
+
+        try {
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const scoresText = areas.map(area => `${area.name}: ${currentAnswers[area.name]}`).join(', ');
+            
+            const prompt = `
+                Actúa como Mila Ciudad, una coach de salud experta, empática y profesional. Una usuaria ha completado un diagnóstico de bienestar con las siguientes puntuaciones (de 1 a 10): ${scoresText}.
+
+                Tu tarea es proporcionar un análisis conciso, profesional y esperanzador. Sigue esta estructura estricta usando Markdown:
+
+                **Análisis de tu Bienestar**
+                Un párrafo introductorio corto y empático (2-3 líneas) que valide su esfuerzo.
+
+                **Tus Fortalezas Actuales**
+                Identifica el área con la puntuación más alta. Escribe un párrafo breve (2-3 líneas) felicitándola por este punto fuerte y explicando por qué es una base importante.
+
+                **Áreas de Enfoque Principal**
+                Identifica las 2 áreas con las puntuaciones más bajas. Para cada una, escribe un párrafo corto (2-3 líneas) explicando de forma normalizada y sin alarmismo por qué es común que esta área se vea afectada en esta etapa de la vida.
+
+                **Mis Primeras Recomendaciones**
+                Ofrece un consejo práctico y accionable para CADA UNA de las 2 áreas de enfoque. Usa una lista con asteriscos. Deben ser consejos sencillos de implementar.
+                
+                **Un Mensaje para Ti**
+                Un párrafo final de empoderamiento (2-3 líneas), reforzando que esto es un punto de partida y que tiene el poder de mejorar su bienestar.
+            `;
+
+            const response = await ai.models.generateContent({
+              model: 'gemini-2.5-flash',
+              contents: prompt,
+            });
+
+            setAnalysisResult(response.text);
+
+        } catch (error) {
+            console.error("Error generating analysis:", error);
+            setAnalysisResult("Lo siento, ha ocurrido un error al generar tu análisis. Por favor, inténtalo de nuevo más tarde.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleNext = () => {
-        if (selectedAnswer === null) return;
-        const newAnswers = [...answers];
-        newAnswers[step - 1] = selectedAnswer;
+        const currentArea = areas[step - 1].name;
+        const newAnswers = { ...answers, [currentArea]: sliderValue };
         setAnswers(newAnswers);
-        setSelectedAnswer(null);
-        setStep(step + 1);
-    };
-
-    const getResults = () => {
-        const physicalScore = answers.slice(0, 4).reduce((a, b) => a + b, 0);
-        const emotionalScore = answers.slice(4, 8).reduce((a, b) => a + b, 0);
-        const lifestyleScore = answers.slice(8, 12).reduce((a, b) => a + b, 0);
-        const totalScore = (physicalScore + emotionalScore + lifestyleScore) / (12 * 3) * 100;
         
-        const data = [
-            { subject: 'S. Físicos', A: (physicalScore / 12) * 100, fullMark: 100 },
-            { subject: 'B. Emocional', A: (emotionalScore / 12) * 100, fullMark: 100 },
-            { subject: 'Estilo de Vida', A: (lifestyleScore / 12) * 100, fullMark: 100 },
-        ];
-        
-        const scores = {
-            'Síntomas Físicos': (physicalScore / 12) * 100,
-            'Bienestar Emocional': (emotionalScore / 12) * 100,
-            'Energía y Estilo de Vida': (lifestyleScore / 12) * 100,
-        };
-        
-        const lowestArea = Object.entries(scores).sort(([,a],[,b]) => b-a)[0][0];
-        
-        return { totalScore, data, lowestArea };
-    };
-
-    const resetQuiz = () => {
-        setStep(0);
-        setAnswers(new Array(12).fill(0));
-        setSelectedAnswer(null);
-    };
-
-    const currentQuestion = questions[step - 1];
-    const progress = step > 0 ? ((step - 1) / questions.length) * 100 : 0;
-    
-    const renderContent = () => {
-        if (step === 0) {
-            return (
-                 <div className="text-center animate-fade-in">
-                    <i className="fas fa-spa text-6xl text-cyan-300 mb-6"></i>
-                    <h1 className="text-4xl md:text-5xl font-extrabold font-montserrat text-cyan-700">Diagnóstico de Bienestar</h1>
-                    <p className="mt-4 text-lg text-gray-600 max-w-xl mx-auto">¿Sientes que algo ha cambiado? Evalúa en <strong>2 minutos</strong> las áreas clave de tu salud y obtén una <strong>visión clara de tu estado actual</strong> para saber por dónde empezar.</p>
-                    <button onClick={() => setStep(1)} className="mt-8 font-semibold text-cyan-600 hover:text-cyan-800 text-lg group">
-                        Hacer el diagnóstico <span className="transition-transform duration-300 inline-block group-hover:translate-x-2">&rarr;</span>
-                    </button>
-                </div>
-            );
+        if (step < questions.length) {
+            setStep(step + 1);
+            setSliderValue(5); // Reset slider for next question
+        } else {
+            setStep(step + 1); // Move to results view
+            generateAnalysis(newAnswers);
         }
+    };
+    
+    const chartData = areas.map(area => ({
+        subject: area.name,
+        score: answers[area.name] || 0,
+        fullMark: 10,
+    }));
+    
+    const getRecommendedPosts = () => {
+        if (!Object.keys(answers).length) return [];
+        
+        // Fix: Explicitly converting sort comparison values to numbers to prevent type errors.
+        // The error indicates that the types of `a` and `b` are not suitable for an arithmetic operation.
+        const sortedAreas = Object.entries(answers).sort(([, a], [, b]) => Number(a) - Number(b));
+        const lowestAreas = sortedAreas.slice(0, 2).map(([name]) => name);
+        
+        const recommendedPosts = new Set<BlogPost>();
+        
+        lowestAreas.forEach(areaName => {
+            const areaInfo = areas.find(a => a.name === areaName);
+            if (!areaInfo) return;
+            
+            const relatedPost = allPosts.find(p => p.tags.some(tag => areaInfo.tags.includes(tag)) && ![...recommendedPosts].map(rp => rp.slug).includes(p.slug));
+            
+            if (relatedPost) {
+                recommendedPosts.add(relatedPost);
+            }
+        });
 
-        if (step <= questions.length) {
-            return (
-                <div className="animate-fade-in w-full">
-                    <div className="text-center mb-8">
-                        <p className="font-semibold text-cyan-600">{currentQuestion.category}</p>
-                        <h2 className="text-2xl md:text-3xl font-semibold mt-2 text-gray-700">{currentQuestion.question}</h2>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 my-8">
-                        {options.map((option, index) => (
-                            <button
-                                key={index}
-                                onClick={() => handleAnswer(index)}
-                                className={`p-4 rounded-lg border-2 text-center transition-all duration-200 ${selectedAnswer === index ? 'bg-cyan-600 text-white border-cyan-700 shadow-lg' : 'bg-white border-gray-200 hover:border-cyan-400 hover:shadow-md'}`}
-                            >
-                                {option}
-                            </button>
-                        ))}
-                    </div>
+        // Fill up to 2 posts if not enough were found
+        if (recommendedPosts.size < 2) {
+            const popularPosts = allPosts.filter(p => p.isFeatured && ![...recommendedPosts].map(rp => rp.slug).includes(p.slug));
+            for(let i=0; i<popularPosts.length && recommendedPosts.size < 2; i++) {
+                recommendedPosts.add(popularPosts[i]);
+            }
+        }
+        
+        return Array.from(recommendedPosts).slice(0, 2);
+    };
 
-                    <div className="mt-10 text-center">
-                         <button onClick={handleNext} disabled={selectedAnswer === null} className="bg-cyan-600 text-white font-bold py-3 px-12 rounded-full hover:bg-cyan-700 transition-colors shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed">
-                            {step === questions.length ? 'Ver mis resultados' : 'Siguiente'}
+    const recommendedPosts = getRecommendedPosts();
+    
+    const renderMarkdown = (text: string) => {
+        const escapeHtml = (unsafe: string) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        let processedText = escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        const lines = processedText.split('\n');
+        let html = '';
+        let inList = false;
+        for (const line of lines) {
+            if (line.trim().startsWith('* ')) {
+                if (!inList) {
+                    html += '<ul class="list-disc list-inside space-y-2 mt-2">';
+                    inList = true;
+                }
+                html += `<li>${line.trim().substring(2)}</li>`;
+            } else {
+                if (inList) { html += '</ul>'; inList = false; }
+                if (line.trim()) { html += `<p class="my-3">${line}</p>`; }
+            }
+        }
+        if (inList) { html += '</ul>'; }
+        return { __html: html };
+    };
+    
+    return (
+        <div className="bg-gray-50/50 min-h-screen animate-fade-in">
+            <div className="container mx-auto px-6 py-12 md:py-16">
+                {step === 0 && (
+                    <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
+                        <i className="fas fa-heart-pulse text-5xl text-cyan-500"></i>
+                        <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-cyan-700 mt-6">Diagnóstico Rápido de Bienestar</h1>
+                        <p className="mt-6 text-lg text-gray-700 leading-relaxed">Esta etapa trae consigo muchos cambios. A veces, es difícil saber por dónde empezar. Esta herramienta está diseñada para darte <strong>claridad en menos de 2 minutos.</strong></p>
+                        <p className="mt-4 text-gray-600">Evaluarás 6 áreas clave de tu salud para obtener una visión general de tu estado actual y descubrir tus puntos fuertes y las áreas que podrían necesitar más atención.</p>
+                        <button onClick={() => setStep(1)} className="mt-10 bg-cyan-600 text-white font-bold py-4 px-10 rounded-full hover:bg-cyan-700 transition-colors shadow-lg text-lg transform hover:-translate-y-1">
+                            Comenzar Diagnóstico
                         </button>
                     </div>
+                )}
 
-                    <div className="mt-12">
-                        <div className="w-full bg-gray-200 rounded-full h-2.5">
-                            <div className="bg-cyan-600 h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
-                        </div>
-                        <p className="text-center text-sm text-gray-500 mt-2">Progreso: {Math.round(progress)}%</p>
-                    </div>
-                </div>
-            );
-        }
-        
-        const { totalScore, data, lowestArea } = getResults();
-        
-        const encodedPageUrl = encodeURIComponent(pageUrl);
-        const encodedTitle = encodeURIComponent("Diagnóstico de Bienestar para la Menopausia");
-        const encodedText = encodeURIComponent("Acabo de hacer este test de bienestar para la menopausia y me ha parecido súper útil. ¡Te animo a hacerlo!");
-
-        return (
-            <div className="text-center animate-fade-in">
-                <h2 className="text-3xl font-bold font-montserrat text-cyan-700">Tus Resultados de Bienestar</h2>
-                <div className="w-full h-80 my-8">
-                    <ResponsiveContainer>
-                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-                            <PolarGrid />
-                            <PolarAngleAxis dataKey="subject" />
-                            <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                            <Radar name="Bienestar" dataKey="A" stroke="#0891B2" fill="#06B6D4" fillOpacity={0.6} />
-                        </RadarChart>
-                    </ResponsiveContainer>
-                </div>
-                <p className="text-lg text-gray-600">Tu puntuación general de bienestar es de <strong>{100 - Math.round(totalScore)}%</strong>.</p>
-                <p className="mt-4 text-lg max-w-xl mx-auto">Veo que tu mayor desafío ahora mismo es el área de <strong>{lowestArea}</strong>. Es completamente normal sentirse así en esta etapa, y quiero que sepas que <strong>no estás sola.</strong></p>
-                <div className="mt-8 bg-cyan-50/50 p-6 rounded-lg border border-cyan-200">
-                    <p className="text-lg font-semibold text-cyan-700">En tu <strong>sesión de claridad gratuita,</strong> podemos explorar juntas cómo mejorar en esta área y crear un <strong>primer plan de acción</strong> para que empieces a sentirte mejor.</p>
-                    <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1xusc8tIardp1BNw4BXAY6IuRIxpqy-d8N5C1El2Hfo_30ls6gLiTrmGImyoHyy1xamV3wfzU3" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg">
-                        Agendar mi Sesión Gratuita
-                    </a>
-                </div>
-                <button onClick={resetQuiz} className="mt-6 text-sm text-gray-500 hover:underline">Volver a hacer el diagnóstico</button>
-                
-                {pageUrl && (
-                    <div className="mt-16 p-8 bg-white rounded-lg shadow-lg border">
-                        <i className="fas fa-share-alt text-4xl text-cyan-500 mb-4"></i>
-                        <h3 className="text-2xl font-bold font-montserrat text-cyan-700">¿Te ha sido útil? ¡Compártelo!</h3>
-                        <p className="mt-2 text-gray-600 max-w-md mx-auto">Seguro que conoces a otras mujeres que se sienten como tú. <strong>Compartir esta herramienta</strong> puede ser el primer paso para que ellas también empiecen a cuidarse.</p>
-                        <div className="mt-6 flex flex-wrap justify-center items-center gap-4">
-                            <a href={`https://wa.me/?text=${encodedText}%20${encodedPageUrl}`} target="_blank" rel="noopener noreferrer" className="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-green-600 transition-colors transform hover:scale-110" aria-label="Compartir en WhatsApp">
-                                <i className="fab fa-whatsapp"></i>
-                            </a>
-                            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedPageUrl}`} target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-blue-700 transition-colors transform hover:scale-110" aria-label="Compartir en Facebook">
-                                <i className="fab fa-facebook-f"></i>
-                            </a>
-                            <a href={`https://twitter.com/intent/tweet?url=${encodedPageUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer" className="bg-sky-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-sky-600 transition-colors transform hover:scale-110" aria-label="Compartir en Twitter">
-                                <i className="fab fa-twitter"></i>
-                            </a>
-                            <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodedPageUrl}&title=${encodedTitle}&summary=${encodedText}`} target="_blank" rel="noopener noreferrer" className="bg-blue-700 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-blue-800 transition-colors transform hover:scale-110" aria-label="Compartir en LinkedIn">
-                                <i className="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="https://www.instagram.com/mila.ciudad/" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:opacity-90 transition-opacity transform hover:scale-110" aria-label="Visitar Instagram">
-                                <i className="fab fa-instagram"></i>
-                            </a>
-                            <a href={`mailto:?subject=${encodedTitle}&body=${encodedText}%0D%0A%0D%0APuedes hacerlo aquí: ${pageUrl}`} className="bg-gray-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl hover:bg-gray-600 transition-colors transform hover:scale-110" aria-label="Compartir por correo electrónico">
-                                <i className="fas fa-envelope"></i>
-                            </a>
-                            <button onClick={handleCopy} className="bg-cyan-600 text-white h-12 px-6 rounded-full flex items-center justify-center hover:bg-cyan-700 transition-colors transform hover:scale-105">
-                                <i className="fas fa-link mr-2"></i> {copySuccess || 'Copiar Enlace'}
-                            </button>
+                {step > 0 && step <= questions.length && (
+                    <div className="max-w-2xl mx-auto">
+                        <div className="bg-white rounded-xl shadow-lg border p-8 md:p-12 animate-fade-in">
+                            <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
+                                <div className="bg-cyan-600 h-2 rounded-full transition-all duration-500" style={{ width: `${(step / questions.length) * 100}%` }}></div>
+                            </div>
+                            <div className="text-center">
+                                <i className={`fas ${areas[step - 1].icon} text-4xl text-cyan-500 mb-4`}></i>
+                                <h2 className="text-2xl md:text-3xl font-semibold text-gray-800">{areas[step - 1].name}</h2>
+                                <p className="text-lg text-gray-600 my-6">{questions[step - 1]}</p>
+                                <div className="my-8">
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="10"
+                                        value={sliderValue}
+                                        onChange={(e) => setSliderValue(Number(e.target.value))}
+                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-600 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-cyan-600"
+                                    />
+                                    <div className="flex justify-between text-xs text-gray-500 mt-2 px-1">
+                                        <span>Bajo</span>
+                                        <span className="font-bold text-lg text-cyan-700 -mt-1">{sliderValue}</span>
+                                        <span>Excelente</span>
+                                    </div>
+                                </div>
+                                <button onClick={handleNext} className="mt-6 bg-cyan-600 text-white font-bold py-3 px-12 rounded-full hover:bg-cyan-700 transition-colors shadow">
+                                    {step === questions.length ? 'Ver Resultados' : 'Siguiente'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
-            </div>
-        );
-    };
+                
+                {step > questions.length && (
+                    <div className="animate-fade-in">
+                        <div className="text-center">
+                            <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-cyan-700">Aquí tienes tu Diagnóstico</h1>
+                            <p className="mt-4 text-lg text-gray-600">Esta es una instantánea de tu bienestar actual. Úsala como punto de partida.</p>
+                        </div>
 
-    return (
-        <div className="py-16 md:py-24 bg-gray-50/50">
-            <div className="container mx-auto px-6 max-w-3xl">
-                <div className="bg-white p-8 md:p-12 rounded-xl shadow-2xl border flex justify-center items-center min-h-[600px]">
-                    {renderContent()}
-                </div>
+                        {isLoading && (
+                            <div className="mt-16 flex flex-col items-center justify-center text-gray-600">
+                                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-cyan-600"></div>
+                                <p className="mt-6 font-semibold text-lg">Estoy analizando tus respuestas para darte una visión profesional...</p>
+                            </div>
+                        )}
+
+                        {!isLoading && analysisResult && (
+                            <div className="mt-12">
+                                <div className="grid lg:grid-cols-5 gap-8">
+                                    <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border">
+                                        <h3 className="font-bold font-montserrat text-center text-xl text-gray-700">Tu Rueda del Bienestar</h3>
+                                        <div style={{ width: '100%', height: 350 }}>
+                                            <ResponsiveContainer>
+                                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+                                                    <PolarGrid />
+                                                    <PolarAngleAxis dataKey="subject" />
+                                                    <PolarRadiusAxis angle={30} domain={[0, 10]} tick={false} axisLine={false} />
+                                                    <Radar name="Puntuación" dataKey="score" stroke="#0891b2" fill="#0891b2" fillOpacity={0.7} />
+                                                </RadarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </div>
+                                    <div className="lg:col-span-3 bg-white p-8 rounded-xl shadow-lg border">
+                                         <div className="prose prose-lg max-w-none text-gray-700" dangerouslySetInnerHTML={renderMarkdown(analysisResult)} />
+                                    </div>
+                                </div>
+
+                                {recommendedPosts.length > 0 && (
+                                    <div className="mt-16">
+                                        <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-8">Recursos Recomendados para Ti</h2>
+                                        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                            {recommendedPosts.map(post => (
+                                                <div key={post.slug} onClick={() => navigate({ page: 'blog', slug: post.slug })} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer group h-full">
+                                                    <div className="relative w-full h-40 overflow-hidden"><img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" /></div>
+                                                    <div className="p-4 flex flex-col flex-grow">
+                                                        <h3 className="text-lg font-bold font-montserrat text-gray-700 mb-2">{post.title}</h3>
+                                                        <span className="font-semibold text-cyan-600 hover:text-cyan-800 transition-colors self-start mt-auto text-sm">Leer más &rarr;</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <ShareResults />
+
+                                <div className="mt-20 text-center max-w-3xl mx-auto p-8 bg-gradient-to-br from-cyan-600 to-cyan-800 text-white rounded-2xl shadow-2xl">
+                                    <h2 className="text-3xl md:text-4xl font-bold font-montserrat">¿Lista para tus Próximos Pasos?</h2>
+                                    <p className="mt-4 text-lg text-cyan-100">Este diagnóstico es el primer paso hacia la claridad. El siguiente es crear un plan de acción.</p>
+                                    <p className="mt-2 text-cyan-100">En una <strong>Sesión de Claridad gratuita de 30 minutos,</strong> podemos hablar de tus resultados y trazar un mapa personalizado para que te sientas mejor. Sin compromiso, solo apoyo real.</p>
+                                     <a href="https://calendar.app.google/e66VNHbHuun6zVz38" target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-white text-cyan-700 font-bold py-4 px-10 rounded-full hover:bg-gray-100 transition-colors shadow-lg text-lg transform hover:-translate-y-1 animate-pulse-cta">
+                                        Agendar mi Sesión Gratuita
+                                    </a>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -870,450 +1112,239 @@ export const DiagnosticPage: React.FC<PageProps> = ({ navigate }) => {
 
 
 // --- ContactPage ---
-export const ContactPage: React.FC = () => {
-    useSEOMetadata(
-        'Contacto | Habla con Mila Ciudad',
-        'Conecta conmigo para agendar tu sesión de claridad, proponer colaboraciones o consultar sobre talleres. Estoy aquí para escucharte.'
-    );
-    const [activeTab, setActiveTab] = useState('consulta');
+export const ContactPage: React.FC<PageProps> = ({ navigate }) => {
+    useSEOMetadata('Contacto | Mila Ciudad', 'Conecta conmigo para hablar sobre tu bienestar, explorar talleres o proponer colaboraciones. Estoy aquí para escucharte.');
+    
+    const [activeTab, setActiveTab] = useState<'consultas' | 'colaboraciones'>('consultas');
+    const [status, setStatus] = useState('');
 
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setStatus('sending');
+        const form = event.currentTarget;
+        const data = new FormData(form);
+
+        try {
+            const response = await fetch("https://formspree.io/f/xgegqjle", {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' },
+            });
+
+            if (response.ok) {
+                setStatus('success');
+                form.reset();
+            } else {
+                const errorData = await response.json();
+                console.error("Formspree error:", errorData);
+                setStatus('error');
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+            setStatus('error');
+        }
+    };
+    
     return (
-        <div className="animate-fade-in py-16 md:py-24 bg-white">
-            <div className="container mx-auto px-6">
-                {/* Intro Section */}
-                <section className="grid lg:grid-cols-2 gap-12 items-center">
-                    <div className="animate-fade-in-left">
-                        <h1 className="text-4xl md:text-5xl font-extrabold font-montserrat text-cyan-700">Conecta Conmigo,<br/><strong>Hablemos de Tu Bienestar</strong></h1>
-                        <p className="mt-6 text-lg text-gray-600 leading-relaxed"><strong>Estoy aquí para escucharte.</strong> Explora mis próximos talleres o envíame un mensaje directo para comenzar tu camino hacia una vida más plena y activa.</p>
-                    </div>
-                    <div className="animate-fade-in-right flex justify-center">
-                        <img src="https://images.squidge.org/images/2025/10/29/Gemini_Generated_Image_anq9g2anq9g2anq9-Photoroom.md.webp" alt="Mila Ciudad" className="rounded-lg shadow-xl max-w-md w-full" />
-                    </div>
-                </section>
-                
-                {/* Events Section */}
-                <section className="mt-24">
-                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-12">Próximas Conferencias y Talleres</h2>
-                    <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-xl border overflow-hidden grid md:grid-cols-2 items-center">
-                        <div className="p-8 flex flex-col justify-center">
-                            <span className="bg-cyan-100 text-cyan-700 font-semibold px-4 py-2 rounded-full self-start">Próximamente</span>
-                            <h3 className="text-2xl font-bold font-montserrat text-gray-800 mt-4">Lo Que <strong>Realmente nos Preocupa</strong> en la Menopausia</h3>
-                            <p className="mt-2 text-gray-600">Un <strong>testimonio honesto</strong> sobre lo que miles de mujeres compartimos en silencio. Descubre que no estás sola en esta etapa.</p>
-                            <a href="#" className="mt-6 inline-block bg-cyan-600 text-white font-semibold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors self-start shadow-md transform hover:-translate-y-0.5">
-                                Más Información
-                            </a>
+        <div className="animate-fade-in bg-white">
+            {/* Hero Section */}
+            <section className="bg-white pt-16 md:pt-24">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 gap-8 items-center">
+                        <div className="text-center md:text-left">
+                            <h1 className="text-4xl md:text-5xl font-bold font-montserrat text-cyan-700">Conecta Conmigo, Hablemos de Tu Bienestar</h1>
+                            <p className="mt-6 text-lg text-gray-600">Estoy aquí para escucharte. Explora mis próximos talleres o envíame un mensaje directo para comenzar tu camino hacia una vida más plena y activa.</p>
                         </div>
-                         <div className="bg-gray-50 h-full flex items-center justify-center">
-                            <img src="https://images.squidge.org/images/2025/11/02/Mila-Ciudad-12-1.png" alt="Conferencia sobre menopausia" className="w-auto h-auto max-h-[450px] max-w-full"/>
+                        <div className="flex justify-center">
+                            <img src="https://images.squidge.org/images/2025/11/01/Gemini_Generated_Image_anq9g2anq9g2anq9-Photoroom.webp" alt="Mila Ciudad" className="w-full max-w-sm" />
                         </div>
                     </div>
-                </section>
-
-                {/* Form Section */}
-                <section className="mt-24 max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-8">Envíame tu Consulta</h2>
-                    <div className="bg-white p-4 sm:p-8 rounded-lg shadow-2xl border">
+                </div>
+            </section>
+            
+            {/* Workshops Section */}
+            <section className="py-16 md:py-24 bg-gray-50/50">
+                <div className="container mx-auto px-6">
+                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-800 mb-12">Próximas Conferencias y Talleres</h2>
+                    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border">
+                        <div className="grid md:grid-cols-5 items-center">
+                            <div className="p-8 md:col-span-3 flex flex-col justify-center">
+                                <span className="bg-cyan-100 text-cyan-700 text-xs font-bold px-3 py-1 rounded-full self-start">Próximamente</span>
+                                <h3 className="mt-4 text-2xl font-bold font-montserrat text-gray-800">Lo Que Realmente nos Preocupa en la Menopausia</h3>
+                                <p className="mt-3 text-gray-600">Un testimonio honesto sobre lo que miles de mujeres compartimos en silencio. Descubre que no estás sola en esta etapa.</p>
+                                <button className="mt-6 bg-cyan-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-cyan-700 transition-colors self-start">
+                                    Más Información
+                                </button>
+                            </div>
+                            <div className="md:col-span-2 hidden md:flex justify-center items-center p-4">
+                                <img src="https://images.squidge.org/images/2025/11/02/Mila-Ciudad-12-1.md.png" alt="Próximas Conferencias" className="w-full h-auto object-contain rounded-lg" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            {/* Contact Form Section */}
+            <section className="py-16 md:py-24">
+                <div className="container mx-auto px-6 max-w-3xl">
+                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-800 mb-12">Envíame tu Consulta</h2>
+                    <div className="bg-white rounded-xl shadow-lg border p-4 sm:p-8">
                         {/* Tabs */}
-                        <div className="flex flex-col sm:flex-row border-b border-gray-200 mb-8">
-                            <button 
-                                onClick={() => setActiveTab('consulta')}
-                                className={`flex-1 py-3 px-4 font-semibold text-center transition-colors duration-300 ${activeTab === 'consulta' ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-gray-500 hover:text-gray-700'}`}
+                        <div className="flex border-b border-gray-200">
+                            <button
+                                onClick={() => setActiveTab('consultas')}
+                                className={`flex-1 py-3 text-center font-semibold transition-colors ${activeTab === 'consultas' ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-gray-500 hover:text-gray-700'}`}
                             >
-                                <i className="fas fa-comment-dots mr-2"></i> Consultas sobre Mi Método
+                                <i className="fas fa-comments mr-2"></i> Consultas sobre Mi Método
                             </button>
                             <button
-                                onClick={() => setActiveTab('colaboracion')}
-                                className={`flex-1 py-3 px-4 font-semibold text-center transition-colors duration-300 ${activeTab === 'colaboracion' ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                onClick={() => setActiveTab('colaboraciones')}
+                                className={`flex-1 py-3 text-center font-semibold transition-colors ${activeTab === 'colaboraciones' ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-gray-500 hover:text-gray-700'}`}
                             >
                                 <i className="fas fa-handshake mr-2"></i> Colaboraciones y Prensa
                             </button>
                         </div>
-
+                        
                         {/* Tab Content */}
-                        <div>
-                            {activeTab === 'consulta' && (
-                                <div className="text-center animate-fade-in p-6 bg-cyan-50/50 rounded-lg border border-cyan-100">
-                                    <h3 className="text-2xl font-bold font-montserrat text-cyan-700">La mejor forma de ayudarte es <strong>hablando</strong></h3>
-                                    <p className="mt-4 text-gray-600 max-w-lg mx-auto">Para consultas sobre mi método y cómo puedo acompañarte de forma personalizada, la <strong>Sesión de Claridad Gratuita</strong> es nuestro mejor punto de partida. Es una conversación sin compromiso donde podré entender tus necesidades y explicarte todo en detalle.</p>
-                                    <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1xusc8tIardp1BNw4BXAY6IuRIxpqy-d8N5C1El2Hfo_30ls6gLiTrmGImyoHyy1xamV3wfzU3" target="_blank" rel="noopener noreferrer" className="mt-6 inline-block bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5">
+                        <div className="pt-8">
+                            {activeTab === 'consultas' && (
+                                <div className="text-center animate-fade-in">
+                                    <h3 className="text-2xl font-bold text-cyan-700">La mejor forma de ayudarte es hablando</h3>
+                                    <p className="mt-4 text-gray-600 max-w-xl mx-auto">Para consultas sobre mi método y cómo puedo acompañarte de forma personalizada, la <strong>Sesión de Claridad Gratuita</strong> es nuestro mejor punto de partida. Es una conversación sin compromiso donde podré entender tus necesidades y explicarte todo en detalle.</p>
+                                    <a href="https://calendar.app.google/e66VNHbHuun6zVz38" target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-1">
                                         Agendar mi Sesión Gratuita
                                     </a>
                                 </div>
                             )}
-
-                            {activeTab === 'colaboracion' && (
-                                <form action="https://formspree.io/f/example" method="POST" className="space-y-6 animate-fade-in">
+                            
+                            {activeTab === 'colaboraciones' && (
+                                <div className="animate-fade-in">
                                     <p className="text-center text-gray-600 mb-6">Para propuestas de conferencias, entrevistas, colaboraciones o prensa, por favor, utiliza este formulario.</p>
-                                    <div className="grid sm:grid-cols-2 gap-6">
-                                        <div>
-                                            <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">Nombre Completo</label>
-                                            <input type="text" name="name" id="name" required className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-cyan-500 focus:border-cyan-500"/>
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                        <div className="grid sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nombre Completo</label>
+                                                <input type="text" name="name" id="name" required className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white text-gray-900" />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                                                <input type="email" name="email" id="email" required className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white text-gray-900" />
+                                            </div>
                                         </div>
                                         <div>
-                                            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">Correo Electrónico</label>
-                                            <input type="email" name="email" id="email" required className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-cyan-500 focus:border-cyan-500"/>
+                                            <label htmlFor="company" className="block text-sm font-medium text-gray-700">Empresa / Medio de Comunicación</label>
+                                            <input type="text" name="company" id="company" className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white text-gray-900" />
                                         </div>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="organization" className="block text-sm font-semibold text-gray-700 mb-1">Empresa / Medio de Comunicación</label>
-                                        <input type="text" name="organization" id="organization" className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-cyan-500 focus:border-cyan-500"/>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-1">Mensaje</label>
-                                        <textarea name="message" id="message" rows={4} required placeholder="Describe brevemente tu propuesta..." className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:ring-cyan-500 focus:border-cyan-500"></textarea>
-                                    </div>
-                                    <div>
-                                        <button type="submit" className="w-full bg-cyan-600 text-white font-bold py-3 px-6 rounded-md hover:bg-cyan-700 transition-colors shadow-md">Enviar Propuesta</button>
-                                    </div>
-                                </form>
+                                        <div>
+                                            <label htmlFor="message" className="block text-sm font-medium text-gray-700">Mensaje</label>
+                                            <textarea name="message" id="message" rows={5} required placeholder="Describe brevemente tu propuesta..." className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500 bg-white text-gray-900"></textarea>
+                                        </div>
+                                        <div>
+                                            <button type="submit" disabled={status === 'sending'} className="w-full bg-cyan-600 text-white font-bold py-3 px-6 rounded-md hover:bg-cyan-700 transition-colors shadow disabled:bg-gray-400">
+                                                {status === 'sending' ? 'Enviando...' : 'Enviar Propuesta'}
+                                            </button>
+                                        </div>
+                                        {status === 'success' && <p className="text-green-600 text-center">¡Propuesta enviada con éxito! Gracias por tu interés.</p>}
+                                        {status === 'error' && <p className="text-red-600 text-center">Hubo un error al enviar el formulario. Por favor, inténtalo de nuevo.</p>}
+                                    </form>
+                                </div>
                             )}
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+
+// --- LegalPages ---
+export const LegalPages: React.FC<{ page: Page; }> = ({ page }) => {
+    const legalContent = {
+        'aviso-legal': {
+            title: 'Aviso Legal',
+            content: `<p>En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y Comercio Electrónico, a continuación se exponen los datos identificativos de la titular de este sitio web.</p>
+            <p class="mt-2"><strong>Titular:</strong> Mila Ciudad</p>
+            <p class="mt-2"><strong>Contacto:</strong> hola@milaciudad.com</p>
+            <p class="mt-4">El acceso y/o uso de este portal atribuye la condición de USUARIO, que acepta, desde dicho acceso y/o uso, las Condiciones Generales de Uso aquí reflejadas. El USUARIO se compromete a hacer un uso adecuado de los contenidos y servicios que Mila Ciudad ofrece a través de su portal.</p>`
+        },
+        'privacidad': {
+            title: 'Política de Privacidad',
+            content: `<p>De conformidad con lo dispuesto en el Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo, de 27 de abril de 2016 (RGPD), le informamos que los datos personales y dirección de correo electrónico, recabados del propio interesado o de fuentes públicas, serán tratados bajo la responsabilidad de Mila Ciudad para el envío de comunicaciones sobre nuestros productos y servicios y se conservarán mientras exista un interés mutuo para ello.</p>
+            <p class="mt-4">Los datos no serán comunicados a terceros, salvo obligación legal. Le informamos que puede ejercer los derechos de acceso, rectificación, portabilidad y supresión de sus datos y los de limitación y oposición a su tratamiento dirigiéndose a hola@milaciudad.com.</p>`
+        },
+        'cookies': {
+            title: 'Política de Cookies',
+            content: `<p>Este sitio web utiliza cookies (pequeños archivos de información que el servidor envía al ordenador de quien accede a la página) para llevar a cabo determinadas funciones que son consideradas imprescindibles para el correcto funcionamiento y visualización del sitio.</p>
+            <p class="mt-4"><strong>Tipos de cookies utilizadas:</strong></p>
+            <ul class="list-disc list-inside mt-2">
+                <li><strong>Cookies técnicas:</strong> Son aquellas que permiten al usuario la navegación a través de una página web y la utilización de las diferentes opciones o servicios que en ella existan.</li>
+                <li><strong>Cookies de análisis:</strong> Son aquellas que, bien tratadas por nosotros o por terceros, nos permiten cuantificar el número de usuarios y así realizar la medición y análisis estadístico de la utilización que hacen los usuarios del servicio ofertado.</li>
+                <li><strong>Cookies de terceros:</strong> Este sitio puede utilizar servicios de terceros que recopilarán información con fines estadísticos, de uso del Site por parte del usuario y para la prestación de otros servicios relacionados con la actividad del Website y otros servicios de Internet.</li>
+            </ul>
+            <p class="mt-4">El usuario tiene la posibilidad de configurar su navegador para ser avisado de la recepción de cookies y para impedir su instalación en su equipo.</p>`
+        }
+    };
+    
+    const currentContent = legalContent[page as keyof typeof legalContent] || legalContent['aviso-legal'];
+    useSEOMetadata(`${currentContent.title} | Mila Ciudad`, `Información legal sobre ${currentContent.title.toLowerCase()} del sitio web de Mila Ciudad.`);
+
+    return (
+        <div className="animate-fade-in container mx-auto px-6 py-12 md:py-16">
+            <div className="max-w-4xl mx-auto">
+                <h1 className="text-4xl font-bold font-montserrat text-gray-700">{currentContent.title}</h1>
+                <div className="prose prose-lg max-w-none mt-8" dangerouslySetInnerHTML={{ __html: currentContent.content }} />
             </div>
         </div>
     );
 };
 
 
+// --- Helper Components ---
 
-// --- LegalPages ---
-interface LegalPagesProps extends PageProps {
-    page: 'aviso-legal' | 'privacidad' | 'cookies';
-}
-export const LegalPages: React.FC<LegalPagesProps> = ({ page, navigate }) => {
-    const legalContent = {
-        'aviso-legal': {
-            title: 'Aviso Legal',
-            content: `
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">1. Datos del Titular</h2>
-                <p><strong>Titular:</strong> Mila Ciudad<br>
-                <strong>Domicilio:</strong> Talavera de la Reina, Toledo, España<br>
-                <strong>Correo electrónico:</strong> admin@climaterio360.com<br>
-                <strong>Sitio web:</strong> https://milaciudad.com</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">2. Objeto</h2>
-                <p>El presente Aviso Legal regula el acceso y uso del sitio web milaciudad.com, cuyo objetivo es ofrecer <strong>información sobre los servicios de coaching y bienestar</strong> de Mila Ciudad, así como contenido divulgativo y educativo a través de su blog profesional especializado en menopausia, salud femenina y transformación personal.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">3. Propiedad Intelectual e Industrial</h2>
-                <p>Todos los contenidos de este sitio web, incluyendo textos, imágenes, diseños, logotipos, gráficos y cualquier otro elemento susceptible de protección, son <strong>propiedad intelectual de Mila Ciudad</strong> o de terceros que han autorizado expresamente su uso. Queda completamente prohibida su reproducción, distribución, comunicación pública o modificación sin autorización expresa por escrito.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">4. Condiciones de Uso</h2>
-                <p>El usuario se compromete a realizar un <strong>uso responsable y conforme a la ley</strong> de los contenidos y servicios ofrecidos en milaciudad.com, actuando de buena fe y respetando el orden público. No está permitido el uso del sitio web para fines ilícitos, fraudulentos o que puedan perjudicar derechos o intereses de Mila Ciudad, sus usuarias o terceros.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">5. Exclusión de Responsabilidad (Descargo de Responsabilidad)</h2>
-                <p><strong>Carácter informativo del contenido:</strong><br>El contenido de este sitio web, especialmente el blog, guías, artículos y recursos educativos, tiene un <strong>carácter meramente informativo y divulgativo.</strong> En ningún caso sustituye el consejo, diagnóstico, evaluación o tratamiento de un profesional de la salud cualificado (médico, ginecólogo, endocrinólogo o profesional sanitario colegiado).</p>
-                <p class="mt-4"><strong>Limitación de responsabilidad:</strong><br>Mila Ciudad <strong>no se responsabiliza de las decisiones,</strong> acciones u omisiones tomadas por los usuarios a partir de la información contenida en el sitio web, ni de los posibles daños, perjuicios o consecuencias adversas derivadas de actuaciones basadas únicamente en dicha información.</p>
-                <p class="mt-4"><strong>Recomendación médica:</strong><br>Antes de iniciar cualquier cambio en tu dieta, rutina de ejercicio, suplementación o estilo de vida, <strong>consulta siempre con tu médico</strong> o profesional de la salud de referencia. Los servicios de coaching ofrecidos por Mila Ciudad complementan, pero <strong>nunca reemplazan,</strong> la atención médica profesional.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">6. Legislación Aplicable y Jurisdicción</h2>
-                <p>Este Aviso Legal se rige por la <strong>normativa española,</strong> en particular por la Ley de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE) y la Ley Orgánica de Protección de Datos (LOPDGDD).</p>
-                <p class="mt-4">Para cualquier controversia, reclamación o litigio que pudiera derivarse del acceso, uso o interpretación del sitio web milaciudad.com, las partes se someten expresamente a la jurisdicción competente de los <strong>Juzgados y Tribunales de Talavera de la Reina (Toledo),</strong> con renuncia expresa a cualquier otro fuero que pudiera corresponderles.</p>
-
-                <h3 class="text-xl font-bold font-montserrat mt-6 mb-3">Contacto</h3>
-                <p>Para cualquier cuestión relativa a este Aviso Legal o a milaciudad.com:</p>
-                <p>📧 Email: admin@climaterio360.com<br>
-                🌐 Web: https://milaciudad.com</p>
-            `
+const TestimonialsSection: React.FC = () => {
+    const testimonials: Testimonial[] = [
+        {
+            quote: 'Mila me dio las herramientas y la confianza que necesitaba. Por primera vez en años, siento que tengo el control de mi cuerpo y no al revés. Su enfoque es práctico, empático y transformador.',
+            author: 'Laura G.',
+            age: 52,
+            profession: 'Abogada',
         },
-        'privacidad': {
-            title: 'Política de Privacidad',
-            content: `
-                <p class="mb-4"><strong>Última actualización:</strong> Noviembre 2025</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">1. ¿Quién es el responsable del tratamiento de tus datos?</h2>
-                <p><strong>Responsable:</strong> Mila Ciudad<br>
-                <strong>Domicilio:</strong> Talavera de la Reina, Toledo, España<br>
-                <strong>Correo electrónico:</strong> admin@climaterio360.com<br>
-                <strong>Sitio web:</strong> https://milaciudad.com</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">2. ¿Con qué finalidad tratamos tus datos personales?</h2>
-                <p>Tratamos los datos que nos facilitas con las siguientes finalidades:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Gestionar las <strong>consultas, solicitudes y consultas</strong> recibidas a través de los formularios de contacto y formularios de pre-sesión.</li>
-                    <li>Procesar las <strong>reservas de sesiones</strong> de coaching y la información de evaluación inicial para personalizar tu experiencia.</li>
-                    <li>Enviar nuestra <strong>newsletter, publicaciones, promociones</strong> de servicios y recursos exclusivos a los suscriptores que hayan otorgado su consentimiento.</li>
-                    <li>Garantizar el correcto <strong>funcionamiento y seguridad</strong> de nuestro sitio web.</li>
-                    <li>Cumplir con <strong>obligaciones legales</strong> derivadas de la relación comercial y fiscal.</li>
-                    <li><strong>Mejorar nuestros servicios</strong> y experiencia del usuario a través de análisis y estadísticas anónimas.</li>
-                </ul>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">3. ¿Cuál es la base legal para el tratamiento de tus datos?</h2>
-                <p>La base legal para el tratamiento de tus datos personales es:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong>Consentimiento expreso:</strong> Otorgado voluntariamente al marcar la casilla de aceptación y enviar cualquier formulario en milaciudad.com.</li>
-                    <li><strong>Ejecución de un contrato:</strong> Cuando reservas una sesión de coaching o te inscribes en un programa, es necesario tratar tus datos para prestar el servicio.</li>
-                    <li><strong>Obligación legal:</strong> Para cumplir con obligaciones tributarias, contables o legales aplicables en España.</li>
-                    <li><strong>Interés legítimo:</strong> Para mejorar nuestros servicios y prevenir fraude, siempre respetando tus derechos.</li>
-                </ul>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">4. ¿A qué destinatarios se comunicarán tus datos?</h2>
-                <p>Tus datos personales <strong>no se cederán a terceros sin tu consentimiento,</strong> salvo en los siguientes casos:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong>Obligación legal:</strong> Cuando sea requerido by autoridades judiciales, fiscales o administrativas.</li>
-                    <li><strong>Proveedores de servicios (encargados de tratamiento):</strong>
-                        <ul class="list-disc list-inside ml-4 space-y-1 mt-1">
-                            <li>Plataforma de email marketing para envío de newsletter</li>
-                            <li>Servicio de hosting del sitio web</li>
-                            <li>Herramientas de calendario y reservas online</li>
-                            <li>Plataformas de pago (Bizum, Stripe, PayPal)</li>
-                            <li>Google Forms para encuestas y formularios</li>
-                            <li>Google Sheets para análisis de datos</li>
-                        </ul>
-                    </li>
-                </ul>
-                <p class="mt-2">Todos estos proveedores tienen suscritos contratos de confidencialidad y tratamiento de datos conforme al RGPD.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">5. ¿Cuáles son tus derechos cuando nos facilitas tus datos?</h2>
-                <p>Conforme a la normativa de protección de datos (RGPD y LOPDGDD), tienes derecho a:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong>Derecho de acceso:</strong> Obtener confirmación y acceso a tus datos personales.</li>
-                    <li><strong>Derecho de rectificación:</strong> Corregir datos inexactos o incompletos.</li>
-                    <li><strong>Derecho de supresión ("derecho al olvido"):</strong> Solicitar la eliminación de tus datos.</li>
-                    <li><strong>Derecho a la limitación del tratamiento:</strong> Limitar cómo utilizamos tus datos.</li>
-                    <li><strong>Derecho a la portabilidad:</strong> Recibir tus datos en formato estructurado.</li>
-                    <li><strong>Derecho de oposición:</strong> Oponerte a determinados tratamientos de datos.</li>
-                    <li><strong>Derecho a retirar el consentimiento:</strong> En cualquier momento, sin afectar tratamientos previos.</li>
-                </ul>
-                <p class="mt-2">Para ejercer cualquiera de estos derechos, envía una solicitud firmada a <strong>admin@climaterio360.com</strong> con copia de tu documento de identidad.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">6. ¿Por cuánto tiempo conservaremos tus datos?</h2>
-                <p>El período de conservación de tus datos depende de la finalidad del tratamiento:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong>Consultas y contacto:</strong> Se conservarán durante 2 años desde la última comunicación, salvo obligación legal superior.</li>
-                    <li><strong>Clientes de servicios de coaching:</strong> Se conservarán durante toda la duración de la relación contractual y 6 años posteriores para obligaciones fiscales.</li>
-                    <li><strong>Newsletter y suscriptores:</strong> Se conservarán mientras mantengas tu suscripción activa. Al solicitar la baja, se eliminarán en un plazo máximo de 30 días.</li>
-                    <li><strong>Datos de encuestas y evaluaciones:</strong> Se conservarán durante 3 años para mejora de servicios, salvo que solicites su eliminación.</li>
-                    <li><strong>Obligaciones legales:</strong> Se conservarán el tiempo que marca la ley (habitualmente 6 años para obligaciones fiscales en España).</li>
-                </ul>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">7. Seguridad de tus datos</h2>
-                <p>Implementamos <strong>medidas técnicas y organizativas apropiadas</strong> para proteger la seguridad, confidencialidad e integridad de tus datos:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Acceso restringido a personal autorizado únicamente.</li>
-                    <li>Encriptación de conexiones (SSL/HTTPS).</li>
-                    <li>Protección de contraseñas y credenciales.</li>
-                    <li>Copias de seguridad regulares.</li>
-                    <li>Políticas de control de acceso y autenticación.</li>
-                </ul>
-                <p class="mt-2">Sin embargo, ningún sistema es completamente seguro. Te recomendamos usar contraseñas seguras y proteger tu información.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">8. Cookies y tecnologías similares</h2>
-                <p>Nuestro sitio web utiliza cookies y tecnologías similares para:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Mantener sesiones y funcionalidad esencial del sitio.</li>
-                    <li>Análisis de uso y mejora de servicios.</li>
-                    <li>Publicidad personalizada (con tu consentimiento previo).</li>
-                </ul>
-                <p class="mt-2">Para más información, consulta nuestra <strong>Política de Cookies.</strong></p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">9. Transferencias internacionales de datos</h2>
-                <p>Algunos de nuestros proveedores pueden estar ubicados fuera del Espacio Económico Europeo (EEE). En estos casos, garantizamos que:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Se aplicarán mecanismos de protección adecuados (cláusulas contractuales tipo, decisiones de adecuación de la Comisión Europea).</li>
-                    <li>Cumplimos con las exigencias del RGPD en materia de transferencias internacionales.</li>
-                </ul>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">10. Cambios en esta Política de Privacidad</h2>
-                <p>Nos reservamos el derecho de actualizar esta Política de Privacidad en cualquier momento. Los cambios materiales serán comunicados a través de nuestro sitio web o por correo electrónico si es necesario.</p>
-                <p class="mt-2">La versión más actualizada siempre estará disponible en https://milaciudad.com</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">11. Derechos ante la Autoridad de Control</h2>
-                <p>Si consideras que tus derechos de protección de datos no están siendo respetados, tienes derecho a presentar una reclamación ante la <strong>Autoridad de Protección de Datos (AEPD)</strong>:</p>
-                <p class="mt-2"><strong>Agencia Española de Protección de Datos (AEPD)</strong><br>
-                Calle Jorge Juan, 6<br>
-                28001 - Madrid, España<br>
-                Teléfono: +34 901 100 099<br>
-                Web: https://www.aepd.es</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">12. Contacto y Ejercicio de Derechos</h2>
-                <p>Para cualquier cuestión relativa a esta Política de Privacidad, o para ejercer tus derechos de protección de datos:</p>
-                <p>📧 Email: admin@climaterio360.com<br>
-                🌐 Web: https://milaciudad.com<br>
-                📍 Domicilio: Talavera de la Reina, Toledo, España</p>
-
-                <h3 class="text-xl font-bold font-montserrat mt-6 mb-3">Resumen de tus Derechos RGPD</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse mt-2">
-                        <thead>
-                            <tr>
-                                <th class="border p-2"><strong>Derecho</strong></th>
-                                <th class="border p-2"><strong>Descripción</strong></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td class="border p-2">Acceso</td><td class="border p-2">Saber qué datos tenemos sobre ti</td></tr>
-                            <tr><td class="border p-2">Rectificación</td><td class="border p-2">Corregir datos incorrectos</td></tr>
-                            <tr><td class="border p-2">Supresión</td><td class="border p-2">Pedir eliminación de tus datos</td></tr>
-                            <tr><td class="border p-2">Limitación</td><td class="border p-2">Limitar cómo usamos tus datos</td></tr>
-                            <tr><td class="border p-2">Portabilidad</td><td class="border p-2">Recibir tus datos en formato digital</td></tr>
-                            <tr><td class="border p-2">Oposición</td><td class="border p-2">Rechazar ciertos tratamientos</td></tr>
-                            <tr><td class="border p-2">Retirada de consentimiento</td><td class="border p-2">Cambiar de opinión en cualquier momento</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="mt-4">Para ejercer cualquiera de estos derechos, contacta con nosotras enviando un email a <strong>admin@climaterio360.com</strong> con copia de tu documento de identidad.</p>
-            `
+        {
+            quote: 'Pensaba que la menopausia era algo que tenía que "aguantar". Mila me enseñó que es una etapa para florecer. Su método me ha devuelto la energía y la claridad mental que creía perdidas.',
+            author: 'Carmen R.',
+            age: 49,
+            profession: 'Profesora',
         },
-        'cookies': {
-            title: 'Política de Cookies',
-            content: `
-                <p class="mb-4"><strong>Última actualización:</strong> Noviembre 2025</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">1. ¿Qué son las cookies?</h2>
-                <p>Una cookie es un <strong>pequeño fichero de texto</strong> que se almacena en tu navegador cuando visitas una página web. Su utilidad es que la web sea capaz de recordar tu visita cuando vuelvas a navegar por esa página. Las cookies suelen almacenar información de carácter técnico, preferencias personales, personalización de contenidos, estadísticas de uso, etc.</p>
-                <p class="mt-2">Las cookies no ejecutan código ni virus y no acceden a otros ficheros de tu dispositivo. Son totalmente inofensivas, aunque es importante que entiendas cómo se usan para poder controlar su uso.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">2. ¿Qué tipos de cookies utiliza milaciudad.com?</h2>
-                <h3 class="text-xl font-bold mt-4 mb-2 font-lora">Cookies Técnicas (Necesarias)</h3>
-                <p>Son las más elementales y permiten que la web funcione correctamente. Incluyen:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Mantener sesiones activas</li>
-                    <li>Gestionar el carrito de compra (si aplica)</li>
-                    <li>Recordar preferencias de accesibilidad</li>
-                    <li>Detectar si eres un usuario humano o un robot</li>
-                </ul>
-                <p class="mt-2"><strong>Consentimiento:</strong> No necesitan consentimiento previo, pero sí información clara.</p>
-
-                <h3 class="text-xl font-bold mt-4 mb-2 font-lora">Cookies de Análisis</h3>
-                <p>Recogen información sobre cómo utilizas nuestro sitio web para mejorar la experiencia. Incluyen:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Tipo de navegación que realizas</li>
-                    <li>Secciones más visitadas</li>
-                    <li>Tiempo de permanencia en la web</li>
-                    <li>Dispositivo utilizado</li>
-                    <li>Idioma configurado</li>
-                </ul>
-                <p class="mt-2"><strong>Proveedores:</strong> Google Analytics</p>
-                <p class="mt-2"><strong>Consentimiento:</strong> Requieren tu consentimiento expreso.</p>
-
-                <h3 class="text-xl font-bold mt-4 mb-2 font-lora">Cookies de Personalización y Preferencias</h3>
-                <p>Recuerdan tus preferencias personales para futuras visitas:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Idioma preferido</li>
-                    <li>Tema de color (si es aplicable)</li>
-                    <li>Configuraciones de accesibilidad</li>
-                </ul>
-                <p class="mt-2"><strong>Consentimiento:</strong> Requieren consentimiento expreso.</p>
-
-                <h3 class="text-xl font-bold mt-4 mb-2 font-lora">Cookies de Publicidad (Terceros)</h3>
-                <p>Pueden utilizarse para mostrar publicidad personalizada basada en tu comportamiento:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>Redes sociais (Facebook Pixel, LinkedIn, etc.)</li>
-                    <li>Plataformas de publicidad (Google Ads)</li>
-                </ul>
-                <p class="mt-2"><strong>Consentimiento:</strong> Requieren tu consentimiento expreso.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">3. Listado Detallado de Cookies Utilizadas</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse mt-2 text-sm">
-                        <thead>
-                            <tr>
-                                <th class="border p-2"><strong>Nombre</strong></th><th class="border p-2"><strong>Tipo</strong></th><th class="border p-2"><strong>Proveedor</strong></th><th class="border p-2"><strong>Finalidad</strong></th><th class="border p-2"><strong>Duración</strong></th><th class="border p-2"><strong>Consentimiento</strong></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td class="border p-2">cookieConsent</td><td class="border p-2">Técnica/Propia</td><td class="border p-2">Mila Ciudad</td><td class="border p-2">Almacena tu consentimiento de cookies</td><td class="border p-2">1 año</td><td class="border p-2">No requiere</td></tr>
-                            <tr><td class="border p-2">_ga</td><td class="border p-2">Análisis</td><td class="border p-2">Google Analytics</td><td class="border p-2">Distinguir usuarios y analizar tráfico</td><td class="border p-2">2 años</td><td class="border p-2">Sí, requiere</td></tr>
-                            <tr><td class="border p-2">_gid</td><td class="border p-2">Análisis</td><td class="border p-2">Google Analytics</td><td class="border p-2">Identificar sesiones de usuario</td><td class="border p-2">24 horas</td><td class="border p-2">Sí, requiere</td></tr>
-                            <tr><td class="border p-2">_gat</td><td class="border p-2">Análisis</td><td class="border p-2">Google Analytics</td><td class="border p-2">Regular tasa de peticiones</td><td class="border p-2">1 minuto</td><td class="border p-2">Sí, requiere</td></tr>
-                            <tr><td class="border p-2">NID</td><td class="border p-2">Análisis</td><td class="border p-2">Google</td><td class="border p-2">Publicidad personalizada y análisis</td><td class="border p-2">6 meses</td><td class="border p-2">Sí, requiere</td></tr>
-                            <tr><td class="border p-2">IDE</td><td class="border p-2">Análisis</td><td class="border p-2">Google DoubleClick</td><td class="border p-2">Publicidad y seguimiento</td><td class="border p-2">2 años</td><td class="border p-2">Sí, requiere</td></tr>
-                            <tr><td class="border p-2">ANID</td><td class="border p-2">Análisis</td><td class="border p-2">Google</td><td class="border p-2">Publicidad y seguimiento</td><td class="border p-2">2 años</td><td class="border p-2">Sí, requiere</td></tr>
-                            <tr><td class="border p-2">__Host-gs_scs</td><td class="border p-2">Técnica</td><td class="border p-2">Google</td><td class="border p-2">Gestión de sesiones seguras</td><td class="border p-2">Sesión</td><td class="border p-2">No requiere</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">4. Cómo Gestionar tus Preferencias de Cookies</h2>
-                <h3 class="text-xl font-bold mt-4 mb-2 font-lora">En milaciudad.com</h3>
-                <p>Al acceder a nuestro sitio web, verás un <strong>banner de cookies</strong> en la parte inferior. Desde allí puedes:</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong>Aceptar</strong> todas las cookies (excepto cookies estrictamente necesarias)</li>
-                    <li><strong>Rechazar</strong> cookies no esenciales</li>
-                    <li><strong>Configurar</strong> preferencias personalizadas (opción granular para cada tipo)</li>
-                    <li>Acceder a esta política de cookies</li>
-                </ul>
-                <p class="mt-2"><strong>Nota importante:</strong> Si rechazas las cookies de análisis, no podremos mejorar nuestra web basándonos en tu comportamiento, pero la web seguirá funcionando correctamente.</p>
-
-                <h3 class="text-xl font-bold mt-4 mb-2 font-lora">En tu Navegador</h3>
-                <p>En cualquier momento puedes <strong>desactivar o eliminar cookies</strong> desde la configuración de tu navegador:</p>
-                <p class="mt-2"><strong>Google Chrome:</strong> Abre Chrome, ve a "Configuración" &rarr; "Privacidad y seguridad" &rarr; "Cookies y otros datos de sitios".</p>
-                <p class="mt-2"><strong>Mozilla Firefox:</strong> Abre Firefox, ve a "Configuración" &rarr; "Privacidad y seguridad" y busca la sección "Cookies y datos de sitios web".</p>
-                <p class="mt-2"><strong>Safari:</strong> Abre Safari, ve a "Safari" &rarr; "Preferencias" &rarr; "Privacidad".</p>
-                <p class="mt-2"><strong>Microsoft Edge:</strong> Abre Edge, ve a "Configuración" &rarr; "Privacidad, búsqueda y servicios".</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">5. Consentimiento de Cookies</h2>
-                <p>Conforme a la regulación española (LSSI-CE) y europea (ePrivacy Directive y RGPD):</p>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li><strong>Cookies necesarias:</strong> Se instalan automáticamente sin consentimiento previo.</li>
-                    <li><strong>Cookies no necesarias:</strong> Requieren tu consentimiento previo y explícito.</li>
-                    <li><strong>Botón "Rechazar":</strong> Visible y con la misma prominencia que el botón "Aceptar".</li>
-                    <li><strong>Opción granular:</strong> Puedes aceptar/rechazar por tipo de cookie.</li>
-                </ul>
-                <p class="mt-2">Al hacer clic en "Aceptar", autorizas el uso de cookies conforme a esta política. Puedes cambiar tus preferencias en cualquier momento.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">6. Cookies de Terceiros</h2>
-                <p>Utilizamos servicios de terceros que pueden instalar sus propias cookies:</p>
-                <p class="mt-2"><strong>Google Analytics:</strong> Usado para análisis de tráfico. Política de privacidad: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="text-cyan-600 underline">https://policies.google.com/privacy</a>.</p>
-                <p class="mt-2"><strong>Plataformas de Pago (Stripe, Bizum, PayPal):</strong> Para procesar pagos de forma segura. Consulta las políticas de cada plataforma.</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">7. Seguridad y Protección de Datos</h2>
-                <ul class="list-disc list-inside space-y-2 mt-2">
-                    <li>No compartimos datos recopilados por cookies con terceros sin tu consentimiento.</li>
-                    <li>Las cookies se transmiten siempre de forma cifrada (HTTPS).</li>
-                    <li>No almacenamos información sensible (contraseñas, números de tarjeta) en cookies.</li>
-                    <li>Tus datos están sujetos a nuestra <strong>Política de Privacidad.</strong></li>
-                </ul>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">8. Cambios en esta Política de Cookies</h2>
-                <p>Nos reservamos el derecho de actualizar esta Política de Cookies en cualquier momento. Si realizamos cambios materiales, te lo comunicaremos a través de nuestro sitio web o por correo electrónico.</p>
-                <p class="mt-2">La última versión de esta política siempre estará disponible en: https://milaciudad.com</p>
-
-                <h2 class="text-2xl font-bold font-montserrat mt-6 mb-3">9. Contacto</h2>
-                <p>Si tienes dudas sobre nuestra Política de Cookies o quieres reportar un problema:</p>
-                <p>📧 Email: admin@climaterio360.com<br>
-                🌐 Web: https://milaciudad.com<br>
-                📍 Domicilio: Talavera de la Reina, Toledo, España</p>
-
-                <h3 class="text-xl font-bold font-montserrat mt-6 mb-3">Tabla Resumen de Acciones Recomendadas</h3>
-                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse mt-2 text-sm">
-                        <thead>
-                            <tr>
-                                <th class="border p-2"><strong>Acción</strong></th>
-                                <th class="border p-2"><strong>Pasos</strong></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td class="border p-2">Ver todas las cookies</td><td class="border p-2">Abre DevTools (F12) &rarr; Aplicación &rarr; Cookies</td></tr>
-                            <tr><td class="border p-2">Borrar cookies</td><td class="border p-2">Configuración del navegador &rarr; Privacidad &rarr; Borrar datos de navegación</td></tr>
-                            <tr><td class="border p-2">Desactivar cookies</td><td class="border p-2">Configuración del navegador &rarr; Privacidad &rarr; Ajusta permisos</td></tr>
-                            <tr><td class="border p-2">Cambiar preferencias en milaciudad.com</td><td class="border p-2">Haz clic en "Configurar" en el banner de cookies.</td></tr>
-                            <tr><td class="border p-2">Reportar problema</td><td class="border p-2">Envía email a admin@climaterio360.com</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            `
-        }
-    };
-
-    const { title, content } = legalContent[page];
-
-    useSEOMetadata(
-        `${title} | Mila Ciudad`,
-        `Consulta la página de ${title} de Mila Ciudad para obtener información detallada sobre los términos y condiciones de uso del sitio web.`
-    );
+        {
+            quote: 'El acompañamiento de Mila fue un antes y un después. Me sentía sola e incomprendida. Con ella encontré un espacio seguro para hablar de mis miedos y un plan de acción para sentirme mejor.',
+            author: 'Isabel M.',
+            age: 55,
+            profession: 'Emprendedora',
+        },
+    ];
 
     return (
-        <div className="animate-fade-in py-16 md:py-24 bg-gray-50/50">
-            <div className="container mx-auto px-6 max-w-3xl bg-white p-8 md:p-12 rounded-lg shadow-lg border">
-                <h1 className="text-4xl font-bold font-montserrat text-gray-700 mb-8">{title}</h1>
-                <div className="prose lg:prose-lg max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: content }} />
-                 <button onClick={() => navigate({ page: 'home' })} className="mt-12 text-cyan-600 font-semibold hover:underline">
-                    &larr; Volver a la página de inicio
-                </button>
+        <section className="py-16 md:py-24 bg-cyan-50/50">
+            <div className="container mx-auto px-6">
+                <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="text-3xl lg:text-4xl font-bold font-montserrat text-cyan-600">Lo que dicen las mujeres que han trabajado conmigo</h2>
+                </div>
+                <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {testimonials.map((testimonial, index) => (
+                        <AnimateOnScroll key={index} delay={`${index * 100}ms`}>
+                            <div className="bg-white p-8 rounded-xl shadow-lg border h-full flex flex-col">
+                                <i className="fas fa-quote-left text-3xl text-cyan-200"></i>
+                                <p className="text-gray-600 italic my-4 flex-grow">"{testimonial.quote}"</p>
+                                <div className="mt-auto">
+                                    <p className="font-bold font-montserrat text-gray-800">{testimonial.author}</p>
+                                    <p className="text-sm text-gray-500">{testimonial.profession}, {testimonial.age} años</p>
+                                </div>
+                            </div>
+                        </AnimateOnScroll>
+                    ))}
+                </div>
             </div>
-        </div>
+        </section>
     );
 };

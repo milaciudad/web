@@ -16,12 +16,7 @@ export interface BlogPost {
 
 export type Page = 'home' | 'sobre-mi' | 'servicios' | 'menopausia' | 'diagnostico' | 'blog' | 'contacto' | 'aviso-legal' | 'privacidad' | 'cookies';
 
-export interface NavigationTarget {
-    page: Page;
-    section?: string;
-    postSlug?: string;
-    originPage?: Page;
-}
+export type NavigationTarget = Page | { page: 'blog'; slug: string };
 
 export interface Testimonial {
     quote: string;

@@ -1,11 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { getBlogPosts } from '../services/cms';
-import type { BlogPost, NavigationTarget, Page } from '../types';
+import type { BlogPost, Page, NavigationTarget } from '../types';
 import { LeadMagnetBanner, useSEOMetadata } from './UIComponents';
 
-const BlogPostCard: React.FC<{ post: BlogPost; navigate: (target: NavigationTarget) => void; className?: string; isPopular?: boolean; originPage?: Page; }> = ({ post, navigate, className = '', isPopular = false, originPage }) => (
+interface BlogPageWrapperProps {
+    navigate: (target: NavigationTarget) => void;
+    slug?: string;
+}
+
+interface BlogListPageProps {
+    posts: BlogPost[];
+    navigate: (target: NavigationTarget) => void;
+}
+
+interface BlogPostDetailProps {
+    post: BlogPost;
+    allPosts: BlogPost[];
+    navigate: (target: NavigationTarget) => void;
+}
+
+interface BlogPostCardProps {
+    post: BlogPost;
+    onClick: () => void;
+    className?: string;
+    isPopular?: boolean;
+}
+
+const BlogPostCard: React.FC<BlogPostCardProps> = ({ post, onClick, className = '', isPopular = false }) => (
     <div 
-        onClick={() => navigate({ page: 'blog', postSlug: post.slug, originPage: originPage || 'blog' })}
+        onClick={onClick}
         className={`bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 ${className} flex flex-col cursor-pointer group h-full`}
     >
         <div className="relative w-full h-48 overflow-hidden">
@@ -136,26 +159,28 @@ const ContextualCtaBox: React.FC<{ post: BlogPost; }> = ({ post }) => {
             <i className={`fas ${cta.icon} text-5xl text-cyan-200 mb-6`}></i>
             <h2 className="text-3xl font-bold font-montserrat">{cta.title}</h2>
             <p className="mt-4 text-lg text-cyan-100 max-w-2xl mx-auto" dangerouslySetInnerHTML={{ __html: cta.text }}></p>
-            <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ1xusc8tIardp1BNw4BXAY6IuRIxpqy-d8N5C1El2Hfo_30ls6gLiTrmGImyoHyy1xamV3wfzU3" target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-white text-cyan-700 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors shadow-lg text-lg transform hover:-translate-y-1">
+            <a href="https://calendar.app.google/e66VNHbHuun6zVz38" target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-white text-cyan-700 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors shadow-lg text-lg transform hover:-translate-y-1">
                 Agendar Sesión de Claridad
             </a>
         </div>
     );
 };
 
-const AuthorBioSection: React.FC<{ post: BlogPost; navigate: (target: NavigationTarget) => void; }> = ({ post, navigate }) => (
-    <div className="my-16 md:my-24 py-12 text-center border-t border-b border-gray-200">
-        <img src={post.authorImage} alt={post.author} className="w-24 h-24 rounded-full mx-auto mb-4 object-cover" />
-        <p className="text-sm font-semibold tracking-wider text-gray-500">AUTORA</p>
-        <h3 className="text-2xl font-bold font-montserrat text-gray-800">{post.author}</h3>
-        <p className="mt-4 max-w-2xl mx-auto text-gray-600">
-            Enfermera, autora y coach especialista en menopausia. Mi misión es darte las herramientas para que vivas esta etapa con plenitud, fortaleza y autenticidad. <strong>No te doblegues.</strong>
-        </p>
-        <button onClick={() => navigate({ page: 'servicios' })} className="mt-6 bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5">
-            Descubre cómo puedo acompañarte
-        </button>
-    </div>
-);
+const AuthorBioSection: React.FC<{ post: BlogPost; navigate: (target: NavigationTarget) => void; }> = ({ post, navigate }) => {
+    return (
+        <div className="my-16 md:my-24 py-12 text-center border-t border-b border-gray-200">
+            <img src={post.authorImage} alt={post.author} className="w-24 h-24 rounded-full mx-auto mb-4 object-cover" />
+            <p className="text-sm font-semibold tracking-wider text-gray-500">AUTORA</p>
+            <h3 className="text-2xl font-bold font-montserrat text-gray-800">{post.author}</h3>
+            <p className="mt-4 max-w-2xl mx-auto text-gray-600">
+                Enfermera, autora y coach especialista en menopausia. Mi misión es darte las herramientas para que vivas esta etapa con plenitud, fortaleza y autenticidad. <strong>No te doblegues.</strong>
+            </p>
+            <button onClick={() => navigate('servicios')} className="mt-6 bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5">
+                Descubre cómo puedo acompañarte
+            </button>
+        </div>
+    );
+};
 
 
 const RelatedPostsSection: React.FC<{ allPosts: BlogPost[]; currentPost: BlogPost; navigate: (target: NavigationTarget) => void; originPage?: Page; }> = ({ allPosts, currentPost, navigate, originPage }) => {
@@ -174,7 +199,7 @@ const RelatedPostsSection: React.FC<{ allPosts: BlogPost[]; currentPost: BlogPos
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {relatedPosts.map(post => (
-                    <BlogPostCard key={post.slug} post={post} navigate={navigate} originPage={originPage} />
+                    <BlogPostCard key={post.slug} post={post} onClick={() => navigate({ page: 'blog', slug: post.slug })} />
                 ))}
             </div>
         </section>
@@ -182,26 +207,18 @@ const RelatedPostsSection: React.FC<{ allPosts: BlogPost[]; currentPost: BlogPos
 };
 
 
-const BlogPostDetail: React.FC<{ post: BlogPost; allPosts: BlogPost[]; navigate: (target: NavigationTarget) => void; originPage?: Page; }> = ({ post, allPosts, navigate, originPage }) => {
+const BlogPostDetail: React.FC<BlogPostDetailProps> = ({ post, allPosts, navigate }) => {
     useSEOMetadata(
         `${post.title} | Blog Mila Ciudad`,
         post.excerpt
     );
     
-    const backTargetPage = originPage || 'blog';
-    const backButtonTextMap: { [key in Page]?: string } = {
-        menopausia: 'Volver al Centro de Recursos',
-        home: 'Volver a Inicio',
-        blog: 'Volver al Blog',
-    };
-    const backButtonText = backButtonTextMap[backTargetPage] || 'Volver al Blog';
-
     return (
         <div className="container mx-auto px-6 py-12">
             <div className="max-w-6xl mx-auto">
-                <button onClick={() => navigate({ page: backTargetPage })} className="mb-8 text-cyan-600 font-semibold hover:underline">
-                    &larr; {backButtonText}
-                </button>
+                <a href="#/blog" onClick={(e) => { e.preventDefault(); navigate('blog'); }} className="mb-8 text-cyan-600 font-semibold hover:underline">
+                    &larr; Volver al Blog
+                </a>
                 
                 <div className="max-w-4xl mx-auto">
                     <main>
@@ -222,7 +239,7 @@ const BlogPostDetail: React.FC<{ post: BlogPost; allPosts: BlogPost[]; navigate:
                 
                 <AuthorBioSection post={post} navigate={navigate} />
                 
-                <RelatedPostsSection allPosts={allPosts} currentPost={post} navigate={navigate} originPage={originPage} />
+                <RelatedPostsSection allPosts={allPosts} currentPost={post} navigate={navigate} />
             </div>
         </div>
     );
@@ -232,6 +249,7 @@ const FeaturedPostsCarousel: React.FC<{ posts: BlogPost[]; navigate: (target: Na
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
+        if (posts.length === 0) return;
         const timer = setInterval(() => {
             setCurrentIndex(prevIndex => (prevIndex + 1) % posts.length);
         }, 5000); // Change slide every 5 seconds
@@ -241,11 +259,13 @@ const FeaturedPostsCarousel: React.FC<{ posts: BlogPost[]; navigate: (target: Na
 
     const goToPrevious = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (posts.length === 0) return;
         setCurrentIndex(prevIndex => (prevIndex - 1 + posts.length) % posts.length);
     };
 
     const goToNext = (e: React.MouseEvent) => {
         e.stopPropagation();
+        if (posts.length === 0) return;
         setCurrentIndex(prevIndex => (prevIndex + 1) % posts.length);
     };
     
@@ -266,7 +286,7 @@ const FeaturedPostsCarousel: React.FC<{ posts: BlogPost[]; navigate: (target: Na
                 <div
                     key={post.slug}
                     className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out cursor-pointer ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
-                    onClick={() => navigate({ page: 'blog', postSlug: post.slug, originPage })}
+                    onClick={() => navigate({ page: 'blog', slug: post.slug })}
                 >
                     <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
@@ -274,7 +294,7 @@ const FeaturedPostsCarousel: React.FC<{ posts: BlogPost[]; navigate: (target: Na
             ))}
 
             {/* Content */}
-            <div className="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full cursor-pointer" onClick={() => navigate({ page: 'blog', postSlug: currentPost.slug, originPage })}>
+            <div className="absolute bottom-0 left-0 p-8 md:p-12 text-white w-full cursor-pointer" onClick={() => navigate({ page: 'blog', slug: currentPost.slug })}>
                 <span className="text-sm font-bold uppercase tracking-widest bg-cyan-600 px-3 py-1 rounded">Lecturas Destacadas</span>
                 <h2 className="text-3xl md:text-5xl font-bold font-montserrat mt-4 leading-tight max-w-3xl">{currentPost.title}</h2>
                 <p className="mt-2 text-lg text-gray-200 max-w-2xl hidden md:block text-justify">{currentPost.excerpt}</p>
@@ -306,7 +326,7 @@ const FeaturedPostsCarousel: React.FC<{ posts: BlogPost[]; navigate: (target: Na
     );
 };
 
-const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationTarget) => void; }> = ({ posts, navigate }) => {
+const BlogListPage: React.FC<BlogListPageProps> = ({ posts, navigate }) => {
     useSEOMetadata(
         'Blog de Salud Activa y Menopausia | Mila Ciudad',
         'Un espacio con conocimientos, reflexiones y herramientas para vivir la menopausia con plenitud, fortaleza y autenticidad.'
@@ -371,7 +391,7 @@ const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationT
                     {filteredPosts.length > 0 ? (
                         filteredPosts.map((post, index) => (
                             <div key={post.slug} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
-                                <BlogPostCard post={post} navigate={navigate} isPopular={popularPostSlugs.has(post.slug)} originPage="blog" />
+                                <BlogPostCard post={post} onClick={() => navigate({ page: 'blog', slug: post.slug })} isPopular={popularPostSlugs.has(post.slug)} />
                             </div>
                         ))
                     ) : (
@@ -384,38 +404,8 @@ const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationT
                 </div>
 
                 <div className="my-16 md:my-24">
-                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-12">Tus <strong>Herramientas Esenciales</strong></h2>
+                    <h2 className="text-3xl font-bold font-montserrat text-center text-gray-700 mb-12">Para <strong>ti</strong></h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                        <div 
-                            onClick={() => navigate({ page: 'menopausia' })} 
-                            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer h-full"
-                        >
-                            <div className="relative w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-                                <img src="https://images.squidge.org/images/2025/11/02/guiamenomilaciduad-1.md.png" alt="Guía de Menopausia" className="w-full h-full object-contain" />
-                            </div>
-                            <div className="p-6 flex flex-col flex-grow text-center">
-                                <h3 className="text-xl font-bold font-montserrat text-cyan-700">Centro de Recursos para la Menopausia</h3>
-                                <p className="mt-2 text-gray-600 text-sm flex-grow">Un espacio completo para entender, aceptar y vivir esta etapa con plenitud.</p>
-                                <span className="mt-4 font-semibold text-cyan-600 group-hover:text-cyan-800 self-center">
-                                    Explorar &rarr;
-                                </span>
-                            </div>
-                        </div>
-                        <div 
-                            onClick={() => navigate({ page: 'diagnostico' })} 
-                            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer h-full"
-                        >
-                            <div className="relative w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
-                                <img src="https://images.squidge.org/images/2025/11/02/Gemini_Generated_Image_qukf08qukf08qukf-1.png" alt="Diagnóstico de Bienestar" className="w-full h-full object-contain" />
-                            </div>
-                            <div className="p-6 flex flex-col flex-grow text-center">
-                                <h3 className="text-xl font-bold font-montserrat text-cyan-700">Diagnóstico de Bienestar</h3>
-                                <p className="mt-2 text-gray-600 text-sm flex-grow">Evalúa en <strong>2 minutos</strong> las áreas clave de tu salud y obtén una visión clara.</p>
-                                <span className="mt-4 font-semibold text-cyan-600 group-hover:text-cyan-800 self-center">
-                                    Hacer diagnóstico &rarr;
-                                </span>
-                            </div>
-                        </div>
                         <LeadMagnetBanner
                             title="Guía de <strong>dietas ideales</strong> gratuita"
                             description="La dieta ideal en la menopausia <strong>no debe ser un castigo,</strong> sino un acto de amor propio que te permite nutrir tu cuerpo, equilibrar tus hormonas, fortalecer tus huesos y cuidar tu bienestar físico y emocional en esta nueva etapa de vida."
@@ -442,7 +432,7 @@ const BlogListPage: React.FC<{ posts: BlogPost[]; navigate: (target: NavigationT
     );
 };
 
-export const BlogPageWrapper: React.FC<{ navigate: (target: NavigationTarget) => void; postSlug?: string; originPage?: Page; }> = ({ navigate, postSlug, originPage }) => {
+export const BlogPageWrapper: React.FC<BlogPageWrapperProps> = ({ navigate, slug }) => {
     const [posts, setPosts] = useState<BlogPost[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -474,9 +464,9 @@ export const BlogPageWrapper: React.FC<{ navigate: (target: NavigationTarget) =>
         return <div className="text-center py-20 text-red-600">{error}</div>;
     }
 
-    if (postSlug) {
-        const post = posts.find(p => p.slug === postSlug);
-        return post ? <BlogPostDetail post={post} allPosts={posts} navigate={navigate} originPage={originPage} /> : <div className="text-center py-20">Publicación no encontrada.</div>;
+    if (slug) {
+        const post = posts.find(p => p.slug === slug);
+        return post ? <BlogPostDetail post={post} allPosts={posts} navigate={navigate} /> : <div className="text-center py-20">Publicación no encontrada.</div>;
     }
     
     return <BlogListPage posts={posts} navigate={navigate} />;
@@ -496,7 +486,7 @@ export const FeaturedPostsSection: React.FC<{ posts: BlogPost[]; navigate: (targ
                 </div>
                 <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {featuredPosts.map(post => (
-                        <BlogPostCard key={post.slug} post={post} navigate={navigate} originPage={originPage} />
+                        <BlogPostCard key={post.slug} post={post} onClick={() => navigate({ page: 'blog', slug: post.slug })} />
                     ))}
                 </div>
             </div>
