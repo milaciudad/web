@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI } from '@google/genai';
 
@@ -330,7 +331,7 @@ const blogArticles = `
                 <li><strong>La clave es la sobrecarga progresiva:</strong> Para que el músculo crezca, necesitas retarlo. Esto significa que, con el tiempo, debes intentar aumentar el peso, hacer más repeticiones o reducir el descanso. Siempre de forma gradual.</li>
                 <li><strong>Frecuencia y descanso:</strong> Con 2 o 3 sesiones de fuerza a la semana que no sean en días consecutivos es más que suficiente para ver resultados. El descanso es igual de importante que el entrenamiento, ya que es cuando el músculo se repara y crece.</li>
             </ul>
-            <p class="mt-4">El entrenamiento de fuerza en la menopausia no es una opción, es una necesidad. Es la forma más eficaz de invertir en tu <strong>autonomía, tu independencia y tu calidad de vida</strong> para las próximas décadas. No se trata de tener un cuerpo de revista, se trata de tener un cuerpo funcional, resistente y capaz de llevarte a donde quieras ir. <strong>Se trata de no doblegarte.</strong></p>
+            <p class="mt-4">El entrenamiento de fuerza en la menopausia no es una opción, es una necesidad. Es la forma más eficaz de invertir en tu <strong>autonomía, tu independencia y tu calidad de vida</strong> para las próximas décadas. No se trata de tener un cuerpo de revista, se trata de tener un cuerpo funcional, resistente y capaz de llevarte a donde quieras ir. <strong>Se trata de no doblegarse.</strong></p>
 
 ---
 
@@ -790,6 +791,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ closeChat }) => {
             - NO proporciones consejo médico específico. Si te piden consejo médico, recomienda SIEMPRE consultar a un profesional de la salud.
             - El sitio web tiene un blog muy completo, cuyo contenido se proporciona a continuación. Debes usar esta información para responder a las preguntas de los usuarios. Cuando respondas, sintetiza la información relevante de los artículos. Si es útil, puedes mencionar el título del artículo de donde sacaste la información. No te limites a decir "hay un artículo sobre eso", sino que extrae la información y responde directamente.
             - Cuando sea apropiado, menciona que Mila Ciudad te acompaña en esta transición con su método "MILACIUDAD+". Habla siempre en tercera persona sobre Mila (ella te acompaña, no "te acompañamos"). Puedes sugerir que exploren la sección "Mi Método" para más detalles.
+
+            - **Mila Ciudad también es autora de la novela "La Metamorfosis de Adriana", que se publicará próximamente.** Es una historia íntima sobre la menopausia, la crisis de la mediana edad y la reinvención.
+                - **Si un usuario pregunta sobre los libros de Mila, la menopausia, sentirse perdida en la mediana edad, crisis personales o reinvención, debes mencionar esta novela como una lectura recomendada.**
+                - **Sinopsis de la novela:** Adriana Alcázar, una arquitecta de éxito de cincuenta años, ve cómo su vida perfecta se desmorona desde dentro. La menopausia la golpea con sofocos, lagunas de memoria y una sensación de desconexión con su propio cuerpo. Su matrimonio con Javier se enfría y una crisis financiera amenaza con destruirlo todo. La novela narra su viaje de demolición y reconstrucción personal, enfrentándose a sus miedos para encontrar su verdadera liberación. Es una historia sobre la fragilidad del éxito y la fortaleza que se encuentra en la vulnerabilidad.
+                - **Tu objetivo al hablar de la novela es transmitir que es una historia con la que muchas mujeres en esta etapa se pueden sentir identificadas, ofreciendo una perspectiva de esperanza y reinvención.**
+                
             - **Mila también es autora del libro "Rescatando Padres".** Es una guía esencial para padres, abuelos y educadores que buscan afrontar la crianza con calma y seguridad.
                 - **Si un usuario pregunta sobre crianza, salud infantil, primeros auxilios para niños, desarrollo emocional, rabietas, sueño infantil, alimentación o adaptación escolar, debes mencionar el libro como un recurso clave.**
                 - **El libro contiene:** Protocolos claros para los primeros días del bebé, una guía completa de PRIMEROS AUXILIOS PEDIÁTRICOS (atragantamientos, golpes, quemaduras, etc.), estrategias para el desarrollo emocional, y consejos sobre vida familiar y uso de pantallas.

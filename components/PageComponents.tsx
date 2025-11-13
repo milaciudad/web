@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import type { Page, Testimonial, BlogPost, NavigationTarget } from '../types';
 import { LeadMagnetBanner, useSEOMetadata, AnimateOnScroll } from './UIComponents';
@@ -353,8 +352,8 @@ export const ServicesPage: React.FC<PageProps> = ({ navigate }) => {
             <section className="py-16 md:py-24 bg-gray-50/50">
                 <div className="container mx-auto px-6 max-w-5xl">
                     <AnimateOnScroll>
-                        <h2 className="text-4xl md:text-5xl font-extrabold font-montserrat text-center gradient-text animate-gradient-text">EL Método MILACIUDAD+</h2>
-                        <p className="mt-4 text-center text-xl font-semibold text-cyan-700">Tu Viaje Guiado hacia la Plenitud</p>
+                        <h2 className="text-5xl md:text-6xl font-extrabold font-montserrat text-center gradient-text animate-gradient-text">EL Método MILACIUDAD+</h2>
+                        <p className="mt-4 text-center text-2xl font-semibold text-cyan-700">Tu Viaje Guiado hacia la <strong>Plenitud</strong></p>
                     </AnimateOnScroll>
                     
                     <AnimateOnScroll className="mt-12">

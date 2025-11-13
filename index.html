@@ -82,6 +82,17 @@
       .animate-pulse-cta {
         animation: pulse-cta 2.5s ease-in-out infinite;
       }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
     </style>
 <script type="importmap">
 {
@@ -94,8 +105,10 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-white">
     <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>

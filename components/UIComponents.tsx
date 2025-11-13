@@ -308,3 +308,248 @@ export const AnimateOnScroll: React.FC<{ children: React.ReactNode; className?: 
         </div>
     );
 };
+
+// --- PromotionalModal Component ---
+
+interface PromotionalModalProps {
+    onClose: () => void;
+}
+
+export const PromotionalModal: React.FC<PromotionalModalProps> = ({ onClose }) => {
+    // State for toggling the form
+    const [showForm, setShowForm] = useState(false);
+    
+    // States for form handling
+    const [email, setEmail] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, []);
+    
+    // Form submission handler
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+        setError(null);
+        
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('source', 'Promo Modal - Primer Capítulo Libro'); // Be specific
+
+        try {
+            // Using a new Formspree endpoint for this specific registration
+            const response = await fetch('https://formspree.io/f/myzlyjva', {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' },
+            });
+
+            if (response.ok) {
+                setIsSubmitted(true);
+            } else {
+                setError('Hubo un error al registrar tu correo. Inténtalo de nuevo.');
+            }
+        } catch (err) {
+            setError('Hubo un error de red. Por favor, revisa tu conexión.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[100] p-4 animate-fade-in"
+            aria-modal="true"
+            role="dialog"
+            onClick={onClose} // Close on backdrop click
+        >
+            <div 
+                className="relative bg-cyan-50 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 flex flex-col md:flex-row"
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+            >
+                <button 
+                    onClick={onClose} 
+                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 transition-colors z-20 p-2 leading-none bg-white/50 rounded-full"
+                    aria-label="Cerrar"
+                >
+                    <i className="fas fa-times text-2xl"></i>
+                </button>
+
+                {/* Text Column (order-2 on mobile, order-1 on desktop) */}
+                <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center text-center order-2 md:order-1">
+                    
+                    {!showForm ? (
+                        <div className="animate-fade-in">
+                            <h2 className="text-2xl sm:text-4xl font-extrabold font-montserrat uppercase tracking-wider gradient-text animate-gradient-text pb-2 leading-none">
+                                Próximamente
+                            </h2>
+                            <div className="mt-6 md:mt-8 text-gray-700 font-lora leading-relaxed space-y-6">
+                                <p className="font-lora italic text-lg sm:text-xl md:text-lg lg:text-2xl text-cyan-700 font-bold">
+                                    Hablemos de lo que nadie habla.
+                                </p>
+                                <p className="text-base sm:text-lg md:text-base lg:text-xl">
+                                    La vida de Adriana aparentaba ser perfecta. Sin embargo, en su interior, la menopausia la estaba demoliendo: una metamorfosis que la obligó a enfrentar sus miedos más profundos para encontrar su verdadera liberación.
+                                </p>
+                                <p className="font-lora italic text-lg sm:text-xl md:text-lg lg:text-2xl text-cyan-700 font-bold">
+                                    Porque tu historia también merece ser contada.
+                                </p>
+                            </div>
+
+                            <div className="mt-8 md:mt-10">
+                                <button 
+                                    onClick={() => setShowForm(true)}
+                                    className="inline-block bg-cyan-600 text-white font-bold py-3 px-6 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5 animate-pulse-cta text-sm sm:text-base"
+                                >
+                                    Lee la SINOPSIS de la novela
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="animate-fade-in w-full text-center">
+                            <h2 className="text-2xl sm:text-3xl font-extrabold font-montserrat uppercase tracking-wider gradient-text animate-gradient-text pb-1">
+                                Próximamente
+                            </h2>
+                            <h3 className="text-xl font-bold font-montserrat text-cyan-700">Sinopsis: La Metamorfosis de Adriana</h3>
+                            <div className="mt-6 text-gray-700 space-y-4 text-justify text-base pr-4 overflow-y-auto max-h-[30vh] md:max-h-[45vh]">
+                                <p>Adriana Alcázar, una de las arquitectas más respetadas de Madrid, ha construido su vida con la misma precisión con la que diseña sus edificios: una carrera impecable, un matrimonio estable con Javier, un catedrático de Historia del Arte, y una familia de la que se siente orgullosa. A sus cincuenta años, Adriana es el epítome de la mujer que lo tiene todo bajo control. Pero bajo esa fachada de éxito, las primeras grietas comienzan a aparecer.</p>
+                                <p>Una química interna e incontrolable empieza a demoler su mundo desde dentro. Sofocos que la asaltan en reuniones cruciales, lagunas de memoria que la humillan frente a clientes y la sensación de que su cuerpo se ha convertido en un territorio desconocido la sumen en una crisis silenciosa. Adriana lucha por mantener la normalidad, atribuyendo sus síntomas al estrés, mientras la distancia con Javier crece y la intimidad se convertirá en un campo de batalla emocional.</p>
+                                <p>El detonante llega durante un cóctel en la facultad de Javier, donde conoce a Clara Fuentes, una joven y brillante académica cuya vitalidad y agilidad mental se convierten en un espejo cruel de todo lo que Adriana siente que está perdiendo. Este encuentro la obliga a confrontar una verdad aterradora: ya no es la mujer que era. Este torbellino personal se agrava cuando una desastrosa inversión amenaza con destruir el patrimonio familiar, desatando una crisis matrimonial que pone a prueba veinte años de amor y complicidad.</p>
+                                <p>Acorralada por una crisis profesional, personal y financiera, y sintiendo que le está fallando incluso a la fundación que creó para ayudar a jóvenes diseñadores, Adriana debe tomar una decisión: seguir luchando por mantener en pie la vida que construyó o permitirse la demolición total para descubrir quién es realmente cuando ya no queda nada.</p>
+                                <p>En el camino de la transformación Adriana se apoyará en su "cuartel general": su grupo de amigas de toda la vida. Es en estas cenas, entre copas de vino y confesiones nocturnas, donde descubre que no está sola en su batalla. Cada una de sus amigas libra su propia guerra contra la invisibilidad, las expectativas y los estragos del tiempo, tejiendo una red de sororidad que se convertirá en un refugio seguro.</p>
+                                <p className="font-semibold italic text-cyan-800">La Metamorfosis de Adriana﻿ es una novela íntima y visceral sobre el viaje de una mujer a través de la menopausia, la crisis de la mediana edad y la reinvención. Una historia sobre la fragilidad del éxito, la fortaleza que se encuentra en la vulnerabilidad y la liberación que supone aceptar que, para poder volar, primero hay que dejar que todo se derrumbe.</p>
+                            </div>
+                        
+                            <div className="mt-8 text-center">
+                                <h4 className="text-xl font-bold text-gray-800">¡No te lo pierdas!</h4>
+                                <p className="mt-2 text-gray-600">Introduce tu correo para ser de los primeros en recibir el capítulo de regalo.</p>
+                                {isSubmitted ? (
+                                     <div className="mt-6 text-center p-4 bg-green-100 text-green-800 rounded-md">
+                                         <p className="font-semibold text-lg">¡Gracias por registrarte!</p>
+                                         <p>Te avisaremos en cuanto el primer capítulo esté disponible.</p>
+                                     </div>
+                                 ) : (
+                                     <form onSubmit={handleSubmit} className="mt-6 max-w-md mx-auto">
+                                         <div className="flex flex-col sm:flex-row gap-2">
+                                             <label htmlFor="promo-modal-email" className="sr-only">Tu mejor correo electrónico</label>
+                                             <input
+                                                 type="email"
+                                                 id="promo-modal-email"
+                                                 name="email"
+                                                 value={email}
+                                                 onChange={(e) => setEmail(e.target.value)}
+                                                 placeholder="Tu mejor correo electrónico"
+                                                 required
+                                                 className="flex-grow p-3 bg-gray-100 border-transparent rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors text-sm text-gray-900"
+                                                 disabled={isSubmitting}
+                                             />
+                                             <button 
+                                                 type="submit" 
+                                                 className="bg-cyan-600 text-white font-bold py-3 px-5 rounded-md hover:bg-cyan-700 transition-colors shadow disabled:bg-gray-400 text-sm"
+                                                 disabled={isSubmitting}
+                                             >
+                                                 {isSubmitting ? 'Registrando...' : '¡LO QUIERO!'}
+                                             </button>
+                                         </div>
+                                         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                                     </form>
+                                 )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Image Column (order-1 on mobile, order-2 on desktop) */}
+                <div className="md:w-1/2 h-80 md:h-auto order-1 md:order-2 flex items-center justify-center p-6">
+                    <img 
+                        src="https://images.squidge.org/images/2025/11/10/Libro-Mila-Ciudad-La-metamorfosis-de-Adriana.md.png" 
+                        alt="Próximamente: La metamorfosis de Adriana"
+                        className="w-full h-full object-contain"
+                    />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+// --- BookPromoModal Component ---
+
+interface BookPromoModalProps {
+    onClose: () => void;
+}
+
+export const BookPromoModal: React.FC<BookPromoModalProps> = ({ onClose }) => {
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, []);
+
+    return (
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[100] p-4 animate-fade-in"
+            aria-modal="true"
+            role="dialog"
+            onClick={onClose} // Close on backdrop click
+        >
+            <div 
+                className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 flex flex-col md:flex-row"
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+            >
+                <button 
+                    onClick={onClose} 
+                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 transition-colors z-20 p-2 leading-none bg-white/50 rounded-full"
+                    aria-label="Cerrar"
+                >
+                    <i className="fas fa-times text-2xl"></i>
+                </button>
+
+                {/* Image Column */}
+                <div className="md:w-1/3 flex items-center justify-center p-8 bg-gray-100 rounded-l-xl order-1">
+                    <img 
+                        src="https://images.squidge.org/images/2025/11/01/Diseno-sin-titulo-_6_-_1_-Photoroom.webp" 
+                        alt="Libro Rescatando Padres"
+                        className="w-full max-w-[250px] h-auto object-contain transition-transform duration-300 hover:scale-105"
+                    />
+                </div>
+                
+                {/* Text Column */}
+                <div className="md:w-2/3 p-8 md:p-12 flex flex-col justify-center text-center order-2">
+                    <h2 className="text-2xl sm:text-3xl font-bold font-montserrat text-cyan-700 leading-tight">
+                        ¿Y si la clave para educar mejor no estuviera en tus hijos, sino en ti?
+                    </h2>
+                    
+                    <div className="mt-6 text-gray-700 font-lora leading-relaxed space-y-4 text-lg">
+                        <p>
+                            A menudo buscamos soluciones para cambiar el comportamiento de nuestros hijos, sin darnos cuenta de que el verdadero poder de transformación está en nosotros.
+                        </p>
+                        <p>
+                            <strong>"RESCATANDO PADRES"</strong> te invita a un viaje de autodescubrimiento para liderar a tu familia con calma y confianza. Aprende a gestionar tus propias emociones para poder guiar las suyas.
+                        </p>
+                    </div>
+
+                    <div className="mt-8 md:mt-10">
+                        <a 
+                            href="https://amzn.to/4qCo1xt" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-block bg-cyan-600 text-white font-bold py-3 px-8 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-0.5 animate-pulse-cta text-base"
+                        >
+                            Quiero empezar el cambio
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    );
+};

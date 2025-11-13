@@ -254,7 +254,7 @@ const BookSection: React.FC = () => {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div className="text-gray-700">
+                        <div className="text-gray-700 order-2 md:order-1">
                             <h3 className="text-2xl md:text-3xl font-bold font-montserrat text-cyan-700 leading-tight">CONSIGUE LA GUÍA ESENCIAL PARA AFRONTAR CON CALMA TODOS LOS DESAFÍOS DE LA CRIANZA</h3>
                             <p className="mt-6 text-justify">Como madre y enfermera especializada en cuidados pediátricos, entiendo la crianza moderna: un mar de información que genera <strong>ansiedad y preocupación.</strong></p>
                             <p className="mt-4 font-semibold text-justify">Mi libro ofrece:</p>
@@ -268,7 +268,7 @@ const BookSection: React.FC = () => {
                             <p className="mt-6 font-bold text-xl text-cyan-700 text-center"><strong>Invierte en calma, invierte en seguridad.</strong> Es tu compañero de confianza.</p>
                         </div>
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center order-1 md:order-2">
                             <img src="https://images.squidge.org/images/2025/11/01/Diseno-sin-titulo-_6_-_1_-Photoroom.webp" alt="Libro Rescatando Padres" className="max-w-xs md:max-w-sm w-full transition-transform duration-500 hover:scale-105" />
                             <a href={bookUrl} target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-cyan-600 text-white font-bold py-3 px-10 rounded-full hover:bg-cyan-700 transition-colors shadow-lg transform hover:-translate-y-1">
                                 CONSÍGUELO EN AMAZON
