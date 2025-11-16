@@ -55,14 +55,14 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, navigate }) => {
     
     return (
         <>
-            <header className={`bg-white shadow-sm sticky top-0 z-50 font-inter transition-all duration-300 ${isScrolled ? 'py-2' : 'py-4'}`}>
+            <header className={`bg-white shadow-sm sticky top-0 z-50 font-inter ${isScrolled ? 'py-2' : 'py-4'}`}>
                 <div className="container mx-auto px-6 flex justify-between items-center">
                     <div>
                         <a href="#/home" onClick={(e) => { e.preventDefault(); handleNavigation('home'); }} className="flex items-center space-x-4 flex-wrap">
                             <img src="https://images.squidge.org/images/2025/11/01/logotipo-mila-ciudad.webp" alt="Logotipo Mila Ciudad" className={`transition-all duration-300 w-auto ${isScrolled ? 'h-16' : 'h-24'}`}/>
-                            <div className={`${isScrolled ? 'hidden md:block' : ''}`}>
+                            <div>
                                  <span className="text-xl font-bold font-montserrat tracking-wider text-cyan-600">MILA CIUDAD</span>
-                                 <p className={`text-xs font-light text-gray-500 tracking-wider transition-all duration-300 ${isScrolled ? 'hidden' : 'block'}`}>SALUD ACTIVA. NO TE DOBLEGUES.</p>
+                                 <p className={`text-xs font-light text-gray-500 tracking-wider transition-all duration-300 overflow-hidden ${isScrolled ? 'max-h-0 opacity-0' : 'max-h-5 opacity-100'}`}>SALUD ACTIVA. NO TE DOBLEGUES.</p>
                             </div>
                         </a>
                     </div>

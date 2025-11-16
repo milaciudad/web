@@ -40,7 +40,7 @@ const App: React.FC = () => {
         }
     }, []);
     
-    // Effect for handling modals based on navigation changes and session storage
+    // Effect for handling modals based on navigation changes and local storage
     useEffect(() => {
         let promoTimer: ReturnType<typeof setTimeout>;
         let bookTimer: ReturnType<typeof setTimeout>;
@@ -48,7 +48,7 @@ const App: React.FC = () => {
         const currentPage = typeof navigation === 'string' ? navigation : navigation.page;
         
         // Logic for the book promo modal (specific to 'sobre-mi' page)
-        const bookPromoShown = sessionStorage.getItem('bookPromoModalShown');
+        const bookPromoShown = localStorage.getItem('bookPromoModalShown');
         if (currentPage === 'sobre-mi' && !bookPromoShown) {
             bookTimer = setTimeout(() => {
                 setShowBookPromoModal(true);
@@ -56,9 +56,9 @@ const App: React.FC = () => {
         }
 
         // Logic for the generic promo modal
-        const promoModalShown = sessionStorage.getItem('promoModalShown');
-        // Show on home page every time, or on other pages (except 'sobre-mi') only once per session.
-        if (currentPage === 'home' || (!promoModalShown && currentPage !== 'sobre-mi')) {
+        const promoModalShown = localStorage.getItem('promoModalShown');
+        // Show only once per user on pages other than 'sobre-mi' to avoid being annoying.
+        if (!promoModalShown && currentPage !== 'sobre-mi') {
             promoTimer = setTimeout(() => {
                 setShowPromoModal(true);
             }, 500); // 0.5 second delay
@@ -102,6 +102,10 @@ const App: React.FC = () => {
         // Only update if the hash is different to avoid unnecessary history entries
         if (window.location.hash !== `#${path}`) {
             window.location.hash = path;
+        } else {
+            // If the hash is the same, it means we are navigating to the same page.
+            // The desired behavior is to scroll to the top.
+            window.scrollTo(0, 0);
         }
     };
 
@@ -115,12 +119,12 @@ const App: React.FC = () => {
 
     const handleClosePromoModal = () => {
         setShowPromoModal(false);
-        sessionStorage.setItem('promoModalShown', 'true');
+        localStorage.setItem('promoModalShown', 'true');
     };
     
     const handleCloseBookPromoModal = () => {
         setShowBookPromoModal(false);
-        sessionStorage.setItem('bookPromoModalShown', 'true');
+        localStorage.setItem('bookPromoModalShown', 'true');
     };
 
     const currentPage = typeof navigation === 'string' ? navigation : navigation.page;

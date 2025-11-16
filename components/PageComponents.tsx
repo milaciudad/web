@@ -4,7 +4,6 @@ import { LeadMagnetBanner, useSEOMetadata, AnimateOnScroll } from './UIComponent
 import { MenopauseJourney } from './MenopauseJourney';
 import { FeaturedPostsSection } from './BlogComponents';
 import { getBlogPosts } from '../services/cms';
-import { GoogleGenAI } from '@google/genai';
 import {
   Radar,
   RadarChart,
@@ -172,7 +171,7 @@ export const AboutPage: React.FC<PageProps> = ({ navigate }) => {
         'Sobre Mí | Mila Ciudad',
         'De la Ciencia de Cuidar a la Sabiduría de Acompañar. Descubre mi viaje, mi historia y mi misión para acompañarte en la menopausia.'
     );
-    return <div className="animate-fade-in"><MenopauseJourney navigate={navigate} /></div>;
+    return <div><MenopauseJourney navigate={navigate} /></div>;
 };
 
 // --- ServicesPage (Mi Método) ---
@@ -873,41 +872,75 @@ export const DiagnosticPage: React.FC<PageProps> = ({ navigate }) => {
     const generateAnalysis = async (currentAnswers: { [key: string]: number }) => {
         setIsLoading(true);
         setAnalysisResult(null);
-
+    
+        const analysisContent: { [key: string]: { strength: string; focus: string; recommendation: string; } } = {
+            'Sueño': {
+                strength: "Tu descanso es un pilar fundamental. Dormir bien te permite regenerar cuerpo y mente, afrontando cada día con más claridad y paciencia. ¡Sigue cuidando este superpoder!",
+                focus: "El sueño es a menudo el primero en resentirse durante la menopausia. Las fluctuaciones hormonales pueden interrumpir nuestros ciclos de descanso, pero es un área que podemos recuperar con pautas conscientes.",
+                recommendation: "Crea un 'santuario del sueño': mantén tu habitación fresca y oscura, y evita pantallas al menos una hora antes de acostarte. Un ritual relajante, como una infusión de manzanilla, puede marcar la diferencia."
+            },
+            'Energía': {
+                strength: "Tus altos niveles de energía son un tesoro. Te permiten ser proactiva, disfrutar de tus pasiones y mantener una actitud positiva. Es una base fantástica para tu bienestar general.",
+                focus: "La fatiga es uno de los síntomas más comunes en esta etapa. Los cambios hormonales y el sueño interrumpido pueden agotar nuestras 'baterías' internas. No es tu culpa, es biología.",
+                recommendation: "Prioriza la proteína en tu desayuno. Unos huevos o un yogur griego estabilizarán tu azúcar en sangre y te darán energía sostenida para empezar el día con fuerza."
+            },
+            'Estado de Ánimo': {
+                strength: "Mantener un estado de ánimo estable es una gran fortaleza. Te permite gestionar el estrés con más calma y mantener relaciones personales positivas. Es un reflejo de tu resiliencia emocional.",
+                focus: "Las fluctuaciones hormonales pueden afectar directamente a los neurotransmisores del cerebro, provocando irritabilidad o ansiedad. Es una respuesta química, no un fallo de carácter.",
+                recommendation: "Practica la respiración consciente durante 5 minutos al día. Inhala lentamente por 4 segundos y exhala por 6. Esto calma el sistema nervioso y te devuelve al presente."
+            },
+            'Nutrición': {
+                strength: "Tus buenos hábitos alimenticios son tu mejor medicina. Nutrir tu cuerpo conscientemente te proporciona los bloques de construcción para la salud hormonal, ósea y mental. ¡Excelente trabajo!",
+                focus: "Nuestras necesidades nutricionales cambian en la menopausia. Lo que antes funcionaba puede que ahora no sea suficiente. Es una oportunidad para reajustar y darle a tu cuerpo lo que necesita AHORA.",
+                recommendation: "Incorpora más fibra a través de verduras de hoja verde y legumbres. La fibra ayuda a regular las hormonas y a mantener un metabolismo saludable."
+            },
+            'Actividad Física': {
+                strength: "¡Felicidades por mantenerte activa! El movimiento es clave para proteger tus huesos, mantener un metabolismo activo y mejorar tu estado de ánimo. Sigue así, es una de las mejores inversiones en tu futuro.",
+                focus: "La motivación para hacer ejercicio puede disminuir con la fatiga. Sin embargo, el movimiento, especialmente el de fuerza, es más crucial que nunca para proteger nuestra masa muscular y ósea.",
+                recommendation: "Incorpora entrenamiento de fuerza 2-3 veces por semana. No necesitas levantar mucho peso; empezar con tu propio cuerpo o bandas elásticas es perfecto para construir una base sólida."
+            },
+            'Claridad Mental': {
+                strength: "Tu claridad mental es una herramienta increíblemente poderosa. Te permite tomar decisiones acertadas, mantenerte enfocada y aprender cosas nuevas. Es un signo de una gran salud cerebral.",
+                focus: "La 'niebla mental' es un síntoma muy real y frustrante. La fluctuación de estrógenos afecta a la memoria y la concentración. Es una fase temporal mientras tu cerebro se recalibra.",
+                recommendation: "Alimenta tu cerebro con grasas saludables como el aguacate, las nueces o el aceite de oliva virgen extra. Los ácidos grasos omega-3 son fundamentales para la función cognitiva."
+            }
+        };
+    
+        // Simulate async processing without network request
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-            const scoresText = areas.map(area => `${area.name}: ${currentAnswers[area.name]}`).join(', ');
+            const sortedAreas = Object.entries(currentAnswers).sort(([, a], [, b]) => Number(a) - Number(b));
             
-            const prompt = `
-                Actúa como Mila Ciudad, una coach de salud experta, empática y profesional. Una usuaria ha completado un diagnóstico de bienestar con las siguientes puntuaciones (de 1 a 10): ${scoresText}.
+            const highestAreaName = sortedAreas[sortedAreas.length - 1][0];
+            const [lowestArea1Name, lowestArea2Name] = sortedAreas.slice(0, 2).map(([name]) => name);
+    
+            const strengthContent = analysisContent[highestAreaName];
+            const focus1Content = analysisContent[lowestArea1Name];
+            const focus2Content = analysisContent[lowestArea2Name];
+    
+            const result = `**Análisis de tu Bienestar**
+¡Gracias por tomarte este tiempo para ti! Este es un primer paso muy valioso para ganar claridad sobre tu bienestar actual.
 
-                Tu tarea es proporcionar un análisis conciso, profesional y esperanzador. Sigue esta estructura estricta usando Markdown:
+**Tus Fortalezas Actuales**
+Tu puntuación más alta está en **${highestAreaName}**. ${strengthContent ? strengthContent.strength : 'Esta es un área donde demuestras una gran fortaleza. Es una base sólida sobre la cual construir.'}
 
-                **Análisis de tu Bienestar**
-                Un párrafo introductorio corto y empático (2-3 líneas) que valide su esfuerzo.
+**Áreas de Enfoque Principal**
+Las áreas que podrían necesitar un poco más de atención en este momento son **${lowestArea1Name}** y **${lowestArea2Name}**.
+*   **${lowestArea1Name}:** ${focus1Content ? focus1Content.focus : 'Es muy común que esta área se vea afectada en esta etapa. No te preocupes, hay mucho que podemos hacer.'}
+*   **${lowestArea2Name}:** ${focus2Content ? focus2Content.focus : 'Muchas mujeres experimentan desafíos aquí. Lo importante es que ya lo hemos identificado como un punto de partida.'}
 
-                **Tus Fortalezas Actuales**
-                Identifica el área con la puntuación más alta. Escribe un párrafo breve (2-3 líneas) felicitándola por este punto fuerte y explicando por qué es una base importante.
+**Mis Primeras Recomendaciones**
+*   Para mejorar tu **${lowestArea1Name}**: ${focus1Content ? focus1Content.recommendation : 'Empieza por pequeños cambios consistentes.'}
+*   Para apoyar tu **${lowestArea2Name}**: ${focus2Content ? focus2Content.recommendation : 'Busca actividades que disfrutes en esta área.'}
 
-                **Áreas de Enfoque Principal**
-                Identifica las 2 áreas con las puntuaciones más bajas. Para cada una, escribe un párrafo corto (2-3 líneas) explicando de forma normalizada y sin alarmismo por qué es común que esta área se vea afectada en esta etapa de la vida.
-
-                **Mis Primeras Recomendaciones**
-                Ofrece un consejo práctico y accionable para CADA UNA de las 2 áreas de enfoque. Usa una lista con asteriscos. Deben ser consejos sencillos de implementar.
-                
-                **Un Mensaje para Ti**
-                Un párrafo final de empoderamiento (2-3 líneas), reforzando que esto es un punto de partida y que tiene el poder de mejorar su bienestar.
-            `;
-
-            const response = await ai.models.generateContent({
-              model: 'gemini-2.5-flash',
-              contents: prompt,
-            });
-
-            setAnalysisResult(response.text);
-
+**Un Mensaje para Ti**
+Recuerda que esto es solo una instantánea, no una sentencia. Tienes un poder inmenso para influir en tu bienestar. Usa esta información como una brújula, no como un juicio. ¡El camino hacia sentirte mejor empieza hoy!
+`;
+            setAnalysisResult(result);
+    
         } catch (error) {
-            console.error("Error generating analysis:", error);
+            console.error("Error generating in-house analysis:", error);
             setAnalysisResult("Lo siento, ha ocurrido un error al generar tu análisis. Por favor, inténtalo de nuevo más tarde.");
         } finally {
             setIsLoading(false);
@@ -937,8 +970,6 @@ export const DiagnosticPage: React.FC<PageProps> = ({ navigate }) => {
     const getRecommendedPosts = () => {
         if (!Object.keys(answers).length) return [];
         
-        // Fix: Explicitly converting sort comparison values to numbers to prevent type errors.
-        // The error indicates that the types of `a` and `b` are not suitable for an arithmetic operation.
         const sortedAreas = Object.entries(answers).sort(([, a], [, b]) => Number(a) - Number(b));
         const lowestAreas = sortedAreas.slice(0, 2).map(([name]) => name);
         
@@ -1263,14 +1294,21 @@ export const LegalPages: React.FC<{ page: Page; }> = ({ page }) => {
         'aviso-legal': {
             title: 'Aviso Legal',
             content: `<p>En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y Comercio Electrónico, a continuación se exponen los datos identificativos de la titular de este sitio web.</p>
-            <p class="mt-2"><strong>Titular:</strong> Mila Ciudad</p>
-            <p class="mt-2"><strong>Contacto:</strong> hola@milaciudad.com</p>
-            <p class="mt-4">El acceso y/o uso de este portal atribuye la condición de USUARIO, que acepta, desde dicho acceso y/o uso, las Condiciones Generales de Uso aquí reflejadas. El USUARIO se compromete a hacer un uso adecuado de los contenidos y servicios que Mila Ciudad ofrece a través de su portal.</p>`
+            <p><strong>Titular:</strong> Mila Ciudad</p>
+            <p><strong>Contacto:</strong> admin@climaterio360.com</p>
+            <p>El acceso y/o uso de este portal atribuye la condición de USUARIO, que acepta, desde dicho acceso y/o uso, las Condiciones Generales de Uso aquí reflejadas. El USUARIO se compromete a hacer un uso adecuado de los contenidos y servicios que Mila Ciudad ofrece a través de su portal.</p>
+            <h3>Descargo de Responsabilidad</h3>
+            <p>La información y los servicios de coaching ofrecidos en esta plataforma tienen fines estrictamente educativos, informativos y de apoyo.</p>
+            <p><strong>No Asesoramiento Médico ni Diagnóstico:</strong> El contenido de esta web y de las sesiones de coaching NO constituye bajo ninguna circunstancia un consejo médico profesional, diagnóstico, pronóstico o tratamiento. La información no debe ser utilizada para autodiagnosticarse o reemplazar la consulta con un médico o especialista sanitario cualificado.</p>
+            <p><strong>Rol Profesional:</strong> La titular actúa en su capacidad de Coach y Educadora de salud, y no en su rol clínico de enfermera para fines de diagnóstico, prescripción o tratamiento directo de enfermedades. Para cualquier preocupación o síntoma de salud, usted debe buscar el consejo de su médico.</p>
+            <p><strong>Limitación de Responsabilidad y Resultados:</strong> Los resultados de cualquier programa, consejo o recomendación (dieta, ejercicio, suplementos) son variables y dependen de factores individuales. No se ofrecen garantías explícitas o implícitas sobre la efectividad de los consejos para todos los casos. El usuario acepta expresamente que utiliza el contenido del sitio bajo su propia cuenta y riesgo.</p>
+            <p><strong>Llamada a la Acción Médica:</strong> Consulte siempre a su médico antes de iniciar cualquier cambio significativo en su salud, dieta o régimen de suplementos.</p>
+            <p><strong>Testimonios:</strong> Los testimonios e historias de éxito compartidos son experiencias personales y no son una promesa ni garantía de resultados para el resto de los clientes.</p>`
         },
         'privacidad': {
             title: 'Política de Privacidad',
             content: `<p>De conformidad con lo dispuesto en el Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo, de 27 de abril de 2016 (RGPD), le informamos que los datos personales y dirección de correo electrónico, recabados del propio interesado o de fuentes públicas, serán tratados bajo la responsabilidad de Mila Ciudad para el envío de comunicaciones sobre nuestros productos y servicios y se conservarán mientras exista un interés mutuo para ello.</p>
-            <p class="mt-4">Los datos no serán comunicados a terceros, salvo obligación legal. Le informamos que puede ejercer los derechos de acceso, rectificación, portabilidad y supresión de sus datos y los de limitación y oposición a su tratamiento dirigiéndose a hola@milaciudad.com.</p>`
+            <p class="mt-4">Los datos no serán comunicados a terceros, salvo obligación legal. Le informamos que puede ejercer los derechos de acceso, rectificación, portabilidad y supresión de sus datos y los de limitación y oposición a su tratamiento dirigiéndose a admin@climaterio360.com.</p>`
         },
         'cookies': {
             title: 'Política de Cookies',
@@ -1292,7 +1330,7 @@ export const LegalPages: React.FC<{ page: Page; }> = ({ page }) => {
         <div className="animate-fade-in container mx-auto px-6 py-12 md:py-16">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-4xl font-bold font-montserrat text-gray-700">{currentContent.title}</h1>
-                <div className="prose prose-lg max-w-none mt-8" dangerouslySetInnerHTML={{ __html: currentContent.content }} />
+                <div className="prose prose-lg max-w-none mt-8 [&_p]:text-justify" dangerouslySetInnerHTML={{ __html: currentContent.content }} />
             </div>
         </div>
     );
