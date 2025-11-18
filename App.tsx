@@ -40,7 +40,7 @@ const App: React.FC = () => {
         }
     }, []);
     
-    // Effect for handling modals based on navigation changes and local storage
+    // Effect for handling modals based on navigation changes and session storage
     useEffect(() => {
         let promoTimer: ReturnType<typeof setTimeout>;
         let bookTimer: ReturnType<typeof setTimeout>;
@@ -48,7 +48,7 @@ const App: React.FC = () => {
         const currentPage = typeof navigation === 'string' ? navigation : navigation.page;
         
         // Logic for the book promo modal (specific to 'sobre-mi' page)
-        const bookPromoShown = localStorage.getItem('bookPromoModalShown');
+        const bookPromoShown = sessionStorage.getItem('bookPromoModalShown');
         if (currentPage === 'sobre-mi' && !bookPromoShown) {
             bookTimer = setTimeout(() => {
                 setShowBookPromoModal(true);
@@ -56,8 +56,8 @@ const App: React.FC = () => {
         }
 
         // Logic for the generic promo modal
-        const promoModalShown = localStorage.getItem('promoModalShown');
-        // Show only once per user on pages other than 'sobre-mi' to avoid being annoying.
+        const promoModalShown = sessionStorage.getItem('promoModalShown');
+        // Show only once per session on pages other than 'sobre-mi' to avoid being annoying.
         if (!promoModalShown && currentPage !== 'sobre-mi') {
             promoTimer = setTimeout(() => {
                 setShowPromoModal(true);
@@ -119,12 +119,12 @@ const App: React.FC = () => {
 
     const handleClosePromoModal = () => {
         setShowPromoModal(false);
-        localStorage.setItem('promoModalShown', 'true');
+        sessionStorage.setItem('promoModalShown', 'true');
     };
     
     const handleCloseBookPromoModal = () => {
         setShowBookPromoModal(false);
-        localStorage.setItem('bookPromoModalShown', 'true');
+        sessionStorage.setItem('bookPromoModalShown', 'true');
     };
 
     const currentPage = typeof navigation === 'string' ? navigation : navigation.page;

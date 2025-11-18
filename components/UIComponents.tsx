@@ -371,7 +371,7 @@ export const PromotionalModal: React.FC<PromotionalModalProps> = ({ onClose }) =
             onClick={onClose} // Close on backdrop click
         >
             <div 
-                className="relative bg-cyan-50 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 flex flex-col md:flex-row"
+                className="relative bg-cyan-50 rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 flex flex-col lg:flex-row"
                 onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
             >
                 <button 
@@ -382,8 +382,7 @@ export const PromotionalModal: React.FC<PromotionalModalProps> = ({ onClose }) =
                     <i className="fas fa-times text-2xl"></i>
                 </button>
 
-                {/* Text Column (order-2 on mobile, order-1 on desktop) */}
-                <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center text-center order-2 md:order-1">
+                <div className="lg:w-1/2 p-8 md:p-12 flex flex-col justify-center text-center order-2 lg:order-1">
                     
                     {!showForm ? (
                         <div className="animate-fade-in">
@@ -391,13 +390,13 @@ export const PromotionalModal: React.FC<PromotionalModalProps> = ({ onClose }) =
                                 Próximamente
                             </h2>
                             <div className="mt-6 md:mt-8 text-gray-700 font-lora leading-relaxed space-y-6">
-                                <p className="font-lora italic text-lg sm:text-xl md:text-lg lg:text-2xl text-cyan-700 font-bold">
+                                <p className="font-lora italic text-lg sm:text-xl lg:text-2xl text-cyan-700 font-bold">
                                     Hablemos de lo que nadie habla.
                                 </p>
-                                <p className="text-base sm:text-lg md:text-base lg:text-xl">
+                                <p className="text-base sm:text-lg lg:text-xl">
                                     La vida de Adriana aparentaba ser perfecta. Sin embargo, en su interior, la menopausia la estaba demoliendo: una metamorfosis que la obligó a enfrentar sus miedos más profundos para encontrar su verdadera liberación.
                                 </p>
-                                <p className="font-lora italic text-lg sm:text-xl md:text-lg lg:text-2xl text-cyan-700 font-bold">
+                                <p className="font-lora italic text-lg sm:text-xl lg:text-2xl text-cyan-700 font-bold">
                                     Porque tu historia también merece ser contada.
                                 </p>
                             </div>
@@ -417,7 +416,7 @@ export const PromotionalModal: React.FC<PromotionalModalProps> = ({ onClose }) =
                                 Próximamente
                             </h2>
                             <h3 className="text-xl font-bold font-montserrat text-cyan-700">Sinopsis: La Metamorfosis de Adriana</h3>
-                            <div className="mt-6 text-gray-700 space-y-4 text-justify text-base pr-4 overflow-y-auto max-h-[30vh] md:max-h-[45vh]">
+                            <div className="mt-6 text-gray-700 space-y-4 text-justify text-base pr-4 overflow-y-auto max-h-[30vh] lg:max-h-[45vh]">
                                 <p>Adriana Alcázar, una de las arquitectas más respetadas de Madrid, ha construido su vida con la misma precisión con la que diseña sus edificios: una carrera impecable, un matrimonio estable con Javier, un catedrático de Historia del Arte, y una familia de la que se siente orgullosa. A sus cincuenta años, Adriana es el epítome de la mujer que lo tiene todo bajo control. Pero bajo esa fachada de éxito, las primeras grietas comienzan a aparecer.</p>
                                 <p>Una química interna e incontrolable empieza a demoler su mundo desde dentro. Sofocos que la asaltan en reuniones cruciales, lagunas de memoria que la humillan frente a clientes y la sensación de que su cuerpo se ha convertido en un territorio desconocido la sumen en una crisis silenciosa. Adriana lucha por mantener la normalidad, atribuyendo sus síntomas al estrés, mientras la distancia con Javier crece y la intimidad se convertirá en un campo de batalla emocional.</p>
                                 <p>El detonante llega durante un cóctel en la facultad de Javier, donde conoce a Clara Fuentes, una joven y brillante académica cuya vitalidad y agilidad mental se convierten en un espejo cruel de todo lo que Adriana siente que está perdiendo. Este encuentro la obliga a confrontar una verdad aterradora: ya no es la mujer que era. Este torbellino personal se agrava cuando una desastrosa inversión amenaza con destruir el patrimonio familiar, desatando una crisis matrimonial que pone a prueba veinte años de amor y complicidad.</p>
@@ -466,9 +465,9 @@ export const PromotionalModal: React.FC<PromotionalModalProps> = ({ onClose }) =
                 </div>
 
                 {/* Image Column (order-1 on mobile, order-2 on desktop) */}
-                <div className="md:w-1/2 h-80 md:h-auto order-1 md:order-2 flex items-center justify-center p-6">
+                <div className="lg:w-1/2 h-80 lg:h-auto order-1 lg:order-2 flex items-center justify-center p-6">
                     <img 
-                        src="https://images.squidge.org/images/2025/11/10/Libro-Mila-Ciudad-La-metamorfosis-de-Adriana.md.png" 
+                        src="https://images.squidge.org/images/2025/11/16/Libro-Mila-Ciudad-La-metamorfosis-de-Adriana_11zon-1-Photoroom.png" 
                         alt="Próximamente: La metamorfosis de Adriana"
                         className="w-full h-full object-contain"
                     />
@@ -502,7 +501,7 @@ export const BookPromoModal: React.FC<BookPromoModalProps> = ({ onClose }) => {
             onClick={onClose} // Close on backdrop click
         >
             <div 
-                className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 flex flex-col md:flex-row"
+                className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 flex flex-col lg:flex-row"
                 onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
             >
                 <button 
@@ -514,7 +513,7 @@ export const BookPromoModal: React.FC<BookPromoModalProps> = ({ onClose }) => {
                 </button>
 
                 {/* Image Column */}
-                <div className="md:w-1/3 flex items-center justify-center p-8 bg-gray-100 rounded-l-xl order-1">
+                <div className="lg:w-1/3 flex items-center justify-center p-8 bg-gray-100 rounded-l-xl order-1">
                     <img 
                         src="https://images.squidge.org/images/2025/11/01/Diseno-sin-titulo-_6_-_1_-Photoroom.webp" 
                         alt="Libro Rescatando Padres"
@@ -523,7 +522,7 @@ export const BookPromoModal: React.FC<BookPromoModalProps> = ({ onClose }) => {
                 </div>
                 
                 {/* Text Column */}
-                <div className="md:w-2/3 p-8 md:p-12 flex flex-col justify-center text-center order-2">
+                <div className="lg:w-2/3 p-8 md:p-12 flex flex-col justify-center text-center order-2">
                     <h2 className="text-2xl sm:text-3xl font-bold font-montserrat text-cyan-700 leading-tight">
                         ¿Y si la clave para educar mejor no estuviera en tus hijos, sino en ti?
                     </h2>

@@ -20,7 +20,7 @@ interface PageProps {
 // --- HomePage ---
 export const HomePage: React.FC<PageProps> = ({ navigate }) => {
     useSEOMetadata(
-        'Mila Ciudad | Coach de Menopausia y Salud Activa',
+        'Mila Ciudad | Coach de Menopausia y Salud Activa para Mujeres +50',
         'Transforma tu menopausia en una etapa de poder. Descubre el método de Mila Ciudad, enfermera y coach, para navegar los síntomas con claridad y fortaleza.'
     );
     const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -257,6 +257,7 @@ export const ServicesPage: React.FC<PageProps> = ({ navigate }) => {
         const shareLinks = [
             { name: 'WhatsApp', icon: 'fab fa-whatsapp', url: `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`, color: 'bg-green-500 hover:bg-green-600' },
             { name: 'Facebook', icon: 'fab fa-facebook-f', url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, color: 'bg-blue-600 hover:bg-blue-700' },
+            { name: 'X', icon: 'fab fa-twitter', url: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`, color: 'bg-black hover:bg-gray-800' },
             { name: 'LinkedIn', icon: 'fab fa-linkedin-in', url: `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}`, color: 'bg-blue-700 hover:bg-blue-800' },
              { name: 'Instagram', icon: 'fab fa-instagram', url: 'https://www.instagram.com/mila.ciudad/', color: 'bg-pink-500 hover:bg-pink-600' },
             { name: 'Email', icon: 'fas fa-envelope', url: `mailto:?subject=Mira%20este%20m%C3%A9todo%20de%20Mila%20Ciudad&body=${encodedText}%0A%0A${encodedUrl}`, color: 'bg-gray-500 hover:bg-gray-600' },
@@ -501,7 +502,7 @@ export const ServicesPage: React.FC<PageProps> = ({ navigate }) => {
                 <AnimateOnScroll>
                     <div className="container mx-auto px-6">
                         <h2 className="text-4xl md:text-5xl font-extrabold font-montserrat text-center text-cyan-700 mb-12">Tus <strong>Herramientas Esenciales</strong></h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                             <div 
                                 onClick={() => navigate('menopausia')} 
                                 className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer h-full group"
@@ -777,7 +778,7 @@ const ShareResults: React.FC = () => {
     const [copySuccess, setCopySuccess] = useState('');
 
     useEffect(() => {
-        setPageUrl(window.location.origin);
+        setPageUrl(window.location.href);
     }, []);
 
     if (!pageUrl) return null;
