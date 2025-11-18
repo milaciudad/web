@@ -20,7 +20,7 @@ interface PageProps {
 // --- HomePage ---
 export const HomePage: React.FC<PageProps> = ({ navigate }) => {
     useSEOMetadata(
-        'Mila Ciudad | Coach de Menopausia y Salud Activa para Mujeres +50',
+        'Mila Ciudad | Coach de Menopausia y Salud Activa',
         'Transforma tu menopausia en una etapa de poder. Descubre el método de Mila Ciudad, enfermera y coach, para navegar los síntomas con claridad y fortaleza.'
     );
     const [posts, setPosts] = useState<BlogPost[]>([]);
