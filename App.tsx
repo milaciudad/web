@@ -157,7 +157,7 @@ const App: React.FC = () => {
             <main>{renderPage()}</main>
             <Footer navigate={handleNavigate} />
             <ScrollToTopButton />
-
+{/* 
             {isChatOpen ? (
                 <Chatbot closeChat={() => setIsChatOpen(false)} />
             ) : (
@@ -173,7 +173,7 @@ const App: React.FC = () => {
                         <i className="fas fa-comments text-2xl"></i>
                     </button>
                 </div>
-            )}
+            )} */}
 
             {showCookieBanner && (
                 <CookieConsentBanner 
